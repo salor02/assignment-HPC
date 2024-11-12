@@ -54,6 +54,8 @@ make EXT_CFLAGS="-DPOLYBENCH_TIME -DMINI_DATASET" clean all run
 3. Controllare con i dump che non ci siano errori logici
 4. Raccogliere i tempi di esecuzioni delle varie ottimizzazioni con le varie dimensioni dei dataset
    Quindi per ogni ottimizzazione i tempi di esecuzione con ogni dataset
+5. Profilare l'esecuzione sequenziale e le esecuzioni parallelizzate 
+   
 
 ## Nota Importante
 
