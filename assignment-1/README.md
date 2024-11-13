@@ -29,6 +29,12 @@ Per confrontare i risultati di due dump, usare il comando `diff`:
 diff DUMP_SMALL_SEQ DUMP_SMALL_FOR_REDUCTION
 ```
 
+### Valdiazione automatica dei risultati
+Per validare i risultati di un tipo di ottimizzazione:
+```bash
+./validate.sh {TIPO_OTTIMIZZAZIONE}
+```
+
 ## Cambiare la Dimensione del Dataset
 
 Per cambiare la dimensione del dataset, utilizzare:

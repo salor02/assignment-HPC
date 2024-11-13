@@ -14,7 +14,7 @@ CC=gcc
 LD=ld
 OBJDUMP=objdump
 
-OPT=-O2 -g -fopenmp
+OPT=-O0 -g -fopenmp
 CFLAGS=$(OPT) -I. $(EXT_CFLAGS)
 LDFLAGS=-lm $(EXT_LDFLAGS)
 

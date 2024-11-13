@@ -52,10 +52,10 @@ static void kernel_atax(int nx, int ny,
                         DATA_TYPE POLYBENCH_1D(y, NY, ny),          // Vettore y di dimensione ny (output)
                         DATA_TYPE POLYBENCH_1D(tmp, NX, nx))        // Vettore temporaneo tmp di dimensione nx
 {
+  int i, j;
   //___________SOLUZIONE SEQUENZIALE___________
   #if defined SEQUENTIAL
 
-  int i, j;
   // Inizializza l'array y a zero
   for (i = 0; i < _PB_NY; i++)
     y[i] = 0;
