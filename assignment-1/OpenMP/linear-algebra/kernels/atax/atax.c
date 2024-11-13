@@ -54,6 +54,8 @@ static void kernel_atax(int nx, int ny,
 {
   int i, j;
   //___________SOLUZIONE SEQUENZIALE___________
+  int i, j;
+
   #if defined SEQUENTIAL
 
   // Inizializza l'array y a zero
@@ -105,12 +107,12 @@ static void kernel_atax(int nx, int ny,
       y[i] = 0;
       
   #pragma omp parallel for
-  for (int i = 0; i < _PB_NX; i++)
+  for (i = 0; i < _PB_NX; i++)
   {
       double sum = 0;  // Variabile temporanea per accumulare il risultato parziale di tmp[i]
       
       #pragma omp parallel for reduction(+:sum)
-      for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A (lunghezza di x)
+      for (j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A (lunghezza di x)
       {
           sum += A[i][j] * x[j];
       }
@@ -119,12 +121,12 @@ static void kernel_atax(int nx, int ny,
   }
 
   #pragma omp parallel for
-  for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A
+  for (j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A
   {
       double sum = 0;  // Variabile temporanea per l'accumulo parziale
 
       #pragma omp parallel for reduction(+:sum)
-      for (int i = 0; i < _PB_NX; i++)  // Ciclo sulle righe della matrice A
+      for (i = 0; i < _PB_NX; i++)  // Ciclo sulle righe della matrice A
       {
           sum += A[i][j] * tmp[i];
       }
@@ -136,24 +138,24 @@ static void kernel_atax(int nx, int ny,
   #elif defined COLLAPSE
   // Inizializzazione del vettore y
   #pragma omp parallel for
-      for (int i = 0; i < ny; i++)
+      for (i = 0; i < ny; i++)
           y[i] = 0; 
 
   // Inizializza tmp a zero prima del ciclo parallelo
   #pragma omp parallel for
-      for (int i = 0; i < _PB_NX; i++)
+      for (i = 0; i < _PB_NX; i++)
           tmp[i] = 0;
 
   #pragma omp parallel for collapse(2)
-  for (int i = 0; i < _PB_NX; i++) {
-      for (int j = 0; j < _PB_NY; j++) {
+  for (i = 0; i < _PB_NX; i++) {
+      for (j = 0; j < _PB_NY; j++) {
           tmp[i] += A[i][j] * x[j];
       }
   }
 
   #pragma omp parallel for collapse(2)
-  for (int j = 0; j < _PB_NY; j++) {
-      for (int i = 0; i < _PB_NX; i++) {
+  for (j = 0; j < _PB_NY; j++) {
+      for (i = 0; i < _PB_NX; i++) {
           y[j] += A[i][j] * tmp[i];
       }
   }
@@ -193,27 +195,27 @@ static void kernel_atax(int nx, int ny,
   #elif defined TARGET
   // Inizializzazione del vettore y
   #pragma omp parallel for
-          for (int i = 0; i < ny; i++)
+          for (i = 0; i < ny; i++)
               y[i] = 0; 
   #pragma omp parallel for
-          for (int i = 0; i < _PB_NX; i++)
+          for (i = 0; i < _PB_NX; i++)
               tmp [i] = 0; 
   // serve ritornare solo y, tmp è solo una variabile temporanea
   #pragma omp target data map(to: A[0:nx][0:ny], x[0:ny], tmp[0:nx]) map(tofrom: y[0:ny])
       { 
           // Prima fase: calcolo di tmp[i] = A[i][j] * x[j]
           #pragma omp target teams distribute parallel for collapse(2)
-          for (int i = 0; i < nx; i++)
+          for (i = 0; i < nx; i++)
           {
-              for (int j = 0; j < ny; j++)
+              for (j = 0; j < ny; j++)
                   tmp[i] += A[i][j] * x[j];
           }
   
           // Seconda fase: aggiornamento di y[j] += A[i][j] * tmp[i]
           #pragma omp target teams distribute parallel for collapse(2)
-          for (int i = 0; i < nx; i++)
+          for (i = 0; i < nx; i++)
           {
-              for (int j = 0; j < ny; j++)
+              for (j = 0; j < ny; j++)
               {
                   #pragma omp atomic
                   y[j] += A[i][j] * tmp[i]; 
