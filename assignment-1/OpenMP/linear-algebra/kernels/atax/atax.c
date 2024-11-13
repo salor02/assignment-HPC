@@ -52,9 +52,10 @@ static void kernel_atax(int nx, int ny,
                         DATA_TYPE POLYBENCH_1D(y, NY, ny),          // Vettore y di dimensione ny (output)
                         DATA_TYPE POLYBENCH_1D(tmp, NX, nx))        // Vettore temporaneo tmp di dimensione nx
 {
-  int i, j;
   //___________SOLUZIONE SEQUENZIALE___________
+  #if defined SEQUENTIAL
 
+  int i, j;
   // Inizializza l'array y a zero
   for (i = 0; i < _PB_NY; i++)
     y[i] = 0;
@@ -73,149 +74,153 @@ static void kernel_atax(int nx, int ny,
   }
 
   // _________SOLUZIONE PARALLEL FOR___________
-  // // Inizializza l'array y a zero
-  // #pragma omp parallel for
-  // for (i = 0; i < _PB_NY; i++)
-  //   y[i] = 0;
+  #elif defined PARALLEL
+  // Inizializza l'array y a zero
+  #pragma omp parallel for
+  for (i = 0; i < _PB_NY; i++)
+    y[i] = 0;
 
-  // // Calcolo parallelo di tmp[i]
-  // #pragma omp parallel for 
-  // for (i = 0; i < _PB_NX; i++)
-  // {
-  //   tmp[i] = 0;
-  //   for (j = 0; j < _PB_NY; j++)
-  //     tmp[i] = tmp[i] + A[i][j] * x[j];
-  // }
+  // Calcolo parallelo di tmp[i]
+  #pragma omp parallel for 
+  for (i = 0; i < _PB_NX; i++)
+  {
+    tmp[i] = 0;
+    for (j = 0; j < _PB_NY; j++)
+      tmp[i] = tmp[i] + A[i][j] * x[j];
+  }
 
-  // // Aggiornamento parallelo di y[j] DA NOTARE IL CAMBIO DI VARIABILI D'ITERAZIONE
-  // #pragma omp parallel for
-  // for (j = 0; j < _PB_NY; j++)
-  // {
-  //   for (i = 0; i < _PB_NX; i++)
-  //     y[j] = y[j] + A[i][j] * tmp[i];
-  // }
+  // Aggiornamento parallelo di y[j] DA NOTARE IL CAMBIO DI VARIABILI D'ITERAZIONE
+  #pragma omp parallel for
+  for (j = 0; j < _PB_NY; j++)
+  {
+    for (i = 0; i < _PB_NX; i++)
+      y[j] = y[j] + A[i][j] * tmp[i];
+  }
 
   // _________SOLUZIONE PARALLEL FOR + REDUCTION___________
+  #elif defined REDUCTION
   // Inizializza l'array y a zero
-  // #pragma omp parallel for
-  // for (i = 0; i < _PB_NY; i++)
-  //     y[i] = 0;
+  #pragma omp parallel for
+  for (i = 0; i < _PB_NY; i++)
+      y[i] = 0;
       
-  // #pragma omp parallel for
-  // for (int i = 0; i < _PB_NX; i++)
-  // {
-  //     double sum = 0;  // Variabile temporanea per accumulare il risultato parziale di tmp[i]
+  #pragma omp parallel for
+  for (int i = 0; i < _PB_NX; i++)
+  {
+      double sum = 0;  // Variabile temporanea per accumulare il risultato parziale di tmp[i]
       
-  //     #pragma omp parallel for reduction(+:sum)
-  //     for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A (lunghezza di x)
-  //     {
-  //         sum += A[i][j] * x[j];
-  //     }
+      #pragma omp parallel for reduction(+:sum)
+      for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A (lunghezza di x)
+      {
+          sum += A[i][j] * x[j];
+      }
       
-  //     tmp[i] = sum;  // Salva il risultato finale nella posizione corretta
-  // }
+      tmp[i] = sum;  // Salva il risultato finale nella posizione corretta
+  }
 
-  // #pragma omp parallel for
-  // for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A
-  // {
-  //     double sum = 0;  // Variabile temporanea per l'accumulo parziale
+  #pragma omp parallel for
+  for (int j = 0; j < _PB_NY; j++)  // Ciclo sulle colonne della matrice A
+  {
+      double sum = 0;  // Variabile temporanea per l'accumulo parziale
 
-  //     #pragma omp parallel for reduction(+:sum)
-  //     for (int i = 0; i < _PB_NX; i++)  // Ciclo sulle righe della matrice A
-  //     {
-  //         sum += A[i][j] * tmp[i];
-  //     }
+      #pragma omp parallel for reduction(+:sum)
+      for (int i = 0; i < _PB_NX; i++)  // Ciclo sulle righe della matrice A
+      {
+          sum += A[i][j] * tmp[i];
+      }
 
-  //     y[j] = sum;  // Assegna il risultato finale a y[j]
-  // }
+      y[j] = sum;  // Assegna il risultato finale a y[j]
+  }
 
   // // _________SOLUZIONE PARALLEL FOR + COLLAPSE___________
-  // // Inizializzazione del vettore y
-  // #pragma omp parallel for
-  //     for (int i = 0; i < ny; i++)
-  //         y[i] = 0; 
+  #elif defined COLLAPSE
+  // Inizializzazione del vettore y
+  #pragma omp parallel for
+      for (int i = 0; i < ny; i++)
+          y[i] = 0; 
 
-  // // Inizializza tmp a zero prima del ciclo parallelo
-  // #pragma omp parallel for
-  //     for (int i = 0; i < _PB_NX; i++)
-  //         tmp[i] = 0;
+  // Inizializza tmp a zero prima del ciclo parallelo
+  #pragma omp parallel for
+      for (int i = 0; i < _PB_NX; i++)
+          tmp[i] = 0;
 
-  // #pragma omp parallel for collapse(2)
-  // for (int i = 0; i < _PB_NX; i++) {
-  //     for (int j = 0; j < _PB_NY; j++) {
-  //         tmp[i] += A[i][j] * x[j];
-  //     }
-  // }
+  #pragma omp parallel for collapse(2)
+  for (int i = 0; i < _PB_NX; i++) {
+      for (int j = 0; j < _PB_NY; j++) {
+          tmp[i] += A[i][j] * x[j];
+      }
+  }
 
-  // #pragma omp parallel for collapse(2)
-  // for (int j = 0; j < _PB_NY; j++) {
-  //     for (int i = 0; i < _PB_NX; i++) {
-  //         y[j] += A[i][j] * tmp[i];
-  //     }
-  // }
+  #pragma omp parallel for collapse(2)
+  for (int j = 0; j < _PB_NY; j++) {
+      for (int i = 0; i < _PB_NX; i++) {
+          y[j] += A[i][j] * tmp[i];
+      }
+  }
+
   // _________SOLUZIONE TASK___________
-  // #pragma omp parallel
-  //   {
-  //       // Inizializza y fuori dal loop delle task
-  //       #pragma omp for
-  //       for (i = 0; i < ny; i++)
-  //           y[i] = 0;
+  #elif defined TASK
+  #pragma omp parallel
+    {
+        // Inizializza y fuori dal loop delle task
+        #pragma omp for
+        for (i = 0; i < ny; i++)
+            y[i] = 0;
  
-  //       // Task per ognii iterazione del ciclo esterno i
-  //       #pragma omp for
-  //       for (i = 0; i < nx; i++)
-  //       {
-  //           #pragma omp task firstprivate(i) shared(A, x, tmp, y)
-  //           {
-  //               tmp[i] = 0;
-  //               for (j = 0; j < ny; j++)
-  //                   tmp[i] += A[i][j] * x[j];
+        // Task per ognii iterazione del ciclo esterno i
+        #pragma omp for
+        for (i = 0; i < nx; i++)
+        {
+            #pragma omp task firstprivate(i) shared(A, x, tmp, y)
+            {
+                tmp[i] = 0;
+                for (j = 0; j < ny; j++)
+                    tmp[i] += A[i][j] * x[j];
  
-  //               #pragma omp task shared(A, tmp, y) firstprivate(i)
-  //               {
-  //                   for (j = 0; j < ny; j++)
-  //                   {
-  //                       #pragma omp atomic
-  //                       y[j] += A[i][j] * tmp[i];
-  //                   }
-  //               }
-  //           }
-  //       }
-  //   }
+                #pragma omp task shared(A, tmp, y) firstprivate(i)
+                {
+                    for (j = 0; j < ny; j++)
+                    {
+                        #pragma omp atomic
+                        y[j] += A[i][j] * tmp[i];
+                    }
+                }
+            }
+        }
+    }
 
   // _________SOLUZIONE TARGET___________
-  
+  #elif defined TARGET
   // Inizializzazione del vettore y
-  // #pragma omp parallel for
-  //         for (int i = 0; i < ny; i++)
-  //             y[i] = 0; 
-  // #pragma omp parallel for
-  //         for (int i = 0; i < _PB_NX; i++)
-  //             tmp [i] = 0; 
-  // // serve ritornare solo y, tmp è solo una variabile temporanea
-  // #pragma omp target data map(to: A[0:nx][0:ny], x[0:ny], tmp[0:nx]) map(tofrom: y[0:ny])
-  //     { 
-  //         // Prima fase: calcolo di tmp[i] = A[i][j] * x[j]
-  //         #pragma omp target teams distribute parallel for collapse(2)
-  //         for (int i = 0; i < nx; i++)
-  //         {
-  //             for (int j = 0; j < ny; j++)
-  //                 tmp[i] += A[i][j] * x[j];
-  //         }
+  #pragma omp parallel for
+          for (int i = 0; i < ny; i++)
+              y[i] = 0; 
+  #pragma omp parallel for
+          for (int i = 0; i < _PB_NX; i++)
+              tmp [i] = 0; 
+  // serve ritornare solo y, tmp è solo una variabile temporanea
+  #pragma omp target data map(to: A[0:nx][0:ny], x[0:ny], tmp[0:nx]) map(tofrom: y[0:ny])
+      { 
+          // Prima fase: calcolo di tmp[i] = A[i][j] * x[j]
+          #pragma omp target teams distribute parallel for collapse(2)
+          for (int i = 0; i < nx; i++)
+          {
+              for (int j = 0; j < ny; j++)
+                  tmp[i] += A[i][j] * x[j];
+          }
   
-  //         // Seconda fase: aggiornamento di y[j] += A[i][j] * tmp[i]
-  //         #pragma omp target teams distribute parallel for collapse(2)
-  //         for (int i = 0; i < nx; i++)
-  //         {
-  //             for (int j = 0; j < ny; j++)
-  //             {
-  //                 #pragma omp atomic
-  //                 y[j] += A[i][j] * tmp[i]; 
-  //             }
-  //         }
-  //     } 
-
-
+          // Seconda fase: aggiornamento di y[j] += A[i][j] * tmp[i]
+          #pragma omp target teams distribute parallel for collapse(2)
+          for (int i = 0; i < nx; i++)
+          {
+              for (int j = 0; j < ny; j++)
+              {
+                  #pragma omp atomic
+                  y[j] += A[i][j] * tmp[i]; 
+              }
+          }
+      } 
+  #endif
 
 }
 
