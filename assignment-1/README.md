@@ -70,3 +70,14 @@ Il Makefile si trova in:
 ```
 /assignment-HPC/assignment-1/OpenMP/utilities/common.mk
 ```
+
+#Compilazione e Test
+Per compilare e rilevare il tempo, usare lo script `run.sh` come segue:
+```
+./run.sh [GRANDEZZA_DATASET] [OTTIMIZZAZIONE]
+```
+
+Per esempio:
+```
+./run.sh SMALL PARALLEL
+```
