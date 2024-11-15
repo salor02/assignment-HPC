@@ -22,7 +22,7 @@ static void init_array(int nx, int ny,
   for (i = 0; i < ny; i++)
     x[i] = i * M_PI; // Ogni elemento di x è il suo indice moltiplicato per PI
 
-  // Inizializza la matrice A con valori calcolati tramite la formula (i * (j + 1)) / nx
+  // Inizializza la matrice A con valori calcolati tramite la formula (i * (j +  1)) / nx
   // i: indice di riga, j: indice di colonna
   for (i = 0; i < nx; i++)
     for (j = 0; j < ny; j++)
@@ -194,40 +194,39 @@ static void kernel_atax(int nx, int ny,
     }
     // Implicitamente attende la fine di tutti i task
   }
-
+ 
+// _________SOLUZIONE TARGET___________
 // _________SOLUZIONE TARGET___________
 #elif defined TARGET
-// Inizializzazione del vettore y
-#pragma omp parallel for
-  for (int i = 0; i < ny; i++)
-    y[i] = 0;
-#pragma omp parallel for
-  for (int i = 0; i < _PB_NX; i++)
-    tmp[i] = 0;
-// serve ritornare solo y, tmp è solo una variabile temporanea
-#pragma omp target data map(to : A[0 : nx][0 : ny], x[0 : ny], tmp[0 : nx]) map(tofrom : y[0 : ny])
-  {
-// Prima fase: calcolo di tmp[i] = A[i][j] * x[j]
-#pragma omp target teams distribute parallel for collapse(2)
-    for (int i = 0; i < nx; i++)
-    {
-      for (int j = 0; j < ny; j++)
 
+  #pragma omp target data map(to: A[0:nx][0:ny], x[0:ny]) \
+                          map(tofrom: y[0:ny]) \
+                          map(alloc: tmp[0:nx])
+  {
+    // Inizializza l'array y a zero
+    #pragma omp target teams distribute parallel for
+    for (int i = 0; i < ny; i++)
+      y[i] = 0;
+
+    // Calcola il prodotto matrice-vettore: A * x
+    #pragma omp target teams distribute parallel for
+    for (int i = 0; i < _PB_NX; i++) {
+      tmp[i] = 0;
+      for (int j = 0; j < _PB_NY; j++)
         tmp[i] += A[i][j] * x[j];
     }
 
-// Seconda fase: aggiornamento di y[j] += A[i][j] * tmp[i]
-#pragma omp target teams distribute parallel for collapse(2)
-    for (int j = 0; j < nx; j++)
-    {
-      for (int i = 0; i < ny; i++)
-      {
-
+    // Ora aggiorna il vettore y con il risultato della moltiplicazione riga di A * tmp
+    #pragma omp target teams distribute parallel for
+    for (int j = 0; j < _PB_NY; j++) {
+      for (int i = 0; i < _PB_NX; i++) {
+        #pragma omp atomic
         y[j] += A[i][j] * tmp[i];
       }
     }
   }
-#endif
+
+  #endif
 }
 
 int main(int argc, char **argv)
