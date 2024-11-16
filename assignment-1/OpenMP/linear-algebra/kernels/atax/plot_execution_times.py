@@ -2,20 +2,21 @@
 
 import matplotlib.pyplot as plt
 import os
-import numpy as np
-
 # Definisci l'ordine dei dataset e delle ottimizzazioni
 datasets_order = ['MINI', 'SMALL', 'STANDARD', 'LARGE', 'EXTRALARGE']
 optimizations_order = ['SEQUENTIAL', 'PARALLEL', 'REDUCTION', 'COLLAPSE', 'TARGET']
 
 # Inizializza le strutture dati
 data = {}  # data[optimization][dataset] = execution_time
+optimizations = set()
+datasets = set()
 
 # Leggi il file execution_times.txt
 with open('./execution_times.txt', 'r') as f:
     lines = f.readlines()
 
 # Salta l'intestazione
+header = lines[0].strip()
 for line in lines[1:]:
     line = line.strip()
     if not line:
@@ -24,20 +25,19 @@ for line in lines[1:]:
     if len(parts) != 3:
         continue  # Salta le linee non valide
     dataset, optimization, execution_time = parts
+    datasets.add(dataset)
+    optimizations.add(optimization)
     if execution_time == 'ERROR':
         execution_time = None
     else:
-        try:
-            execution_time = float(execution_time)
-            if execution_time == 0:
-                execution_time = None  # Considera zero come dato non valido
-        except ValueError:
-            execution_time = None
+        execution_time = float(execution_time)
+        if execution_time == 0:
+            execution_time = None  # Considera zero come dato non valido
     if optimization not in data:
         data[optimization] = {}
     data[optimization][dataset] = execution_time
 
-# Genera il grafico generale
+# Genera il grafico
 plt.figure(figsize=(10, 6))
 
 for optimization in optimizations_order:
@@ -48,26 +48,24 @@ for optimization in optimizations_order:
     plt.plot(datasets_order, times, marker='o', label=optimization)
 
 plt.xlabel('Dataset')
-plt.ylabel('Tempo di Esecuzione (s)')
-plt.title('Tempi di Esecuzione per Ottimizzazione e Dataset')
+plt.ylabel('Execution Time (s)')
+plt.title('Runtimes for Optimization and Datasets')
 plt.legend()
 plt.grid(True)
 plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
 plt.tight_layout()
-plt.savefig('execution_times_plot.png', dpi=300)
-plt.close()
+plt.savefig('execution_times_plot.png')
 
 # Crea la directory per i grafici dei dataset se non esiste
 os.makedirs('dataset_plots', exist_ok=True)
 
 # Definisci una mappa di colori per le ottimizzazioni
 optimization_colors = {
-    'SEQ': 'blue',
-    'PARALLEL_FOR': 'green',
-    'REDUCTION': 'orange',
+    'SEQUENTIAL': 'blue',
+    'PARALLEL': 'orange',
+    'REDUCTION': 'green',
     'COLLAPSE': 'red',
-    'TASK': 'purple',
-    'TARGET': 'brown'
+    'TARGET': 'purple'
 }
 
 # Genera un bar chart per ogni dataset
@@ -92,9 +90,9 @@ for dataset in datasets_order:
 
     plt.figure(figsize=(8, 6))
     plt.bar(optimizations, times, color=colors)
-    plt.xlabel('Ottimizzazione')
-    plt.ylabel('Tempo di Esecuzione (s)')
-    plt.title(f'Tempi di Esecuzione per {dataset}')
+    plt.xlabel('Optimization')
+    plt.ylabel('Execution Time (s)')
+    plt.title(f'Execution Times for {dataset}')
     plt.grid(True, axis='y', linestyle='--', linewidth=0.5)
     plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
 
@@ -104,10 +102,10 @@ for dataset in datasets_order:
 
     plt.tight_layout()
     # Salva il grafico nella cartella dataset_plots
-    plt.savefig(f'dataset_plots/execution_times_{dataset}.png', dpi=300)
+    plt.savefig(f'dataset_plots/execution_times_{dataset}.png')
     plt.close()
-    
-    # Crea la directory per i grafici dello speedup se non esiste
+
+# Crea la directory per i grafici dello speedup se non esiste
 os.makedirs('speedup_plots', exist_ok=True)
 
 # Genera lo speedup per ogni dataset rispetto a SEQ
