@@ -163,39 +163,7 @@ static void kernel_atax(int nx, int ny,
     }
   }
 
-// _________SOLUZIONE TASK___________
-#elif defined TASK
-#pragma omp parallel
-  {
-// Inizializza y a zero
-#pragma omp for
-    for (int i = 0; i < ny; i++)
-      y[i] = 0;
-
-// Crea task per ogni iterazione di i
-#pragma omp single
-    {
-      for (int i = 0; i < nx; i++)
-      {
-#pragma omp task firstprivate(i) shared(A, x, tmp, y)
-        {
-          tmp[i] = 0;
-          for (int j = 0; j < ny; j++)
-            tmp[i] += A[i][j] * x[j];
-
-          // Aggiorna y[j] all'interno dello stesso task
-          for (int j = 0; j < ny; j++)
-          {
-#pragma omp atomic
-            y[j] += A[i][j] * tmp[i];
-          }
-        }
-      }
-    }
-    // Implicitamente attende la fine di tutti i task
-  }
  
-// _________SOLUZIONE TARGET___________
 // _________SOLUZIONE TARGET___________
 #elif defined TARGET
 
