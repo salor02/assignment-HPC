@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
-
+import os
 # Definisci l'ordine dei dataset e delle ottimizzazioni
 datasets_order = ['MINI', 'SMALL', 'STANDARD', 'LARGE', 'EXTRALARGE']
-optimizations_order = ['SEQUENTIAL', 'PARALLEL', 'REDUCTION', 'COLLAPSE', 'TASK', 'TARGET']
+optimizations_order = ['SEQUENTIAL', 'PARALLEL', 'REDUCTION', 'COLLAPSE', 'TARGET']
 
 # Inizializza le strutture dati
 data = {}  # data[optimization][dataset] = execution_time
@@ -48,11 +48,59 @@ for optimization in optimizations_order:
     plt.plot(datasets_order, times, marker='o', label=optimization)
 
 plt.xlabel('Dataset')
-plt.ylabel('Tempo di Esecuzione (s)')
-plt.title('Tempi di Esecuzione per Ottimizzazione e Dataset')
+plt.ylabel('Execution Time (s)')
+plt.title('Runtimes for Optimization and Datasets')
 plt.legend()
 plt.grid(True)
 plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
 plt.tight_layout()
 plt.savefig('execution_times_plot.png')
 
+# Crea la directory per i grafici dei dataset se non esiste
+os.makedirs('dataset_plots', exist_ok=True)
+
+# Definisci una mappa di colori per le ottimizzazioni
+optimization_colors = {
+    'SEQUENTIAL': 'blue',
+    'PARALLEL': 'orange',
+    'REDUCTION': 'green',
+    'COLLAPSE': 'red',
+    'TARGET': 'purple'
+}
+
+# Genera un bar chart per ogni dataset
+for dataset in datasets_order:
+    times = []
+    colors = []
+    optimizations = []
+    for optimization in optimizations_order:
+        time = data.get(optimization, {}).get(dataset, None)
+        if time is not None:
+            times.append(time)
+            optimizations.append(optimization)
+            # Ottieni il colore per l'ottimizzazione corrente
+            color = optimization_colors.get(optimization, 'gray')
+            colors.append(color)
+        else:
+            print(f"Attenzione: Nessun dato per {optimization} su {dataset}")
+
+    if not times:
+        print(f"Nessun dato disponibile per il dataset {dataset}.")
+        continue
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(optimizations, times, color=colors)
+    plt.xlabel('Optimization')
+    plt.ylabel('Execution Time (s)')
+    plt.title(f'Execution Times for {dataset}')
+    plt.grid(True, axis='y', linestyle='--', linewidth=0.5)
+    plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
+
+    # Aggiungi i valori sopra le barre
+    for i, time in enumerate(times):
+        plt.text(i, time, f'{time:.2e}', ha='center', va='bottom', fontsize=8)
+
+    plt.tight_layout()
+    # Salva il grafico nella cartella dataset_plots
+    plt.savefig(f'dataset_plots/execution_times_{dataset}.png')
+    plt.close()
