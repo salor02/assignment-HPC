@@ -2,20 +2,20 @@
 
 import matplotlib.pyplot as plt
 import os
-# Definisci l'ordine dei dataset e delle ottimizzazioni
+# Define the order of datasets and optimizations
 datasets_order = ['MINI', 'SMALL', 'STANDARD', 'LARGE', 'EXTRALARGE']
 optimizations_order = ['SEQUENTIAL', 'PARALLEL', 'REDUCTION', 'COLLAPSE', 'TARGET']
 
-# Inizializza le strutture dati
+# Initialize data structures
 data = {}  # data[optimization][dataset] = execution_time
 optimizations = set()
 datasets = set()
 
-# Leggi il file execution_times.txt
+# Read the execution_times.txt file
 with open('./execution_times.txt', 'r') as f:
     lines = f.readlines()
 
-# Salta l'intestazione
+# Skip the header
 header = lines[0].strip()
 for line in lines[1:]:
     line = line.strip()
@@ -23,7 +23,7 @@ for line in lines[1:]:
         continue
     parts = line.split()
     if len(parts) != 3:
-        continue  # Salta le linee non valide
+        continue  # Skip invalid lines
     dataset, optimization, execution_time = parts
     datasets.add(dataset)
     optimizations.add(optimization)
@@ -32,12 +32,12 @@ for line in lines[1:]:
     else:
         execution_time = float(execution_time)
         if execution_time == 0:
-            execution_time = None  # Considera zero come dato non valido
+            execution_time = None  # Treat zero as invalid data
     if optimization not in data:
         data[optimization] = {}
     data[optimization][dataset] = execution_time
 
-# Genera il grafico
+# Generate the overall runtime plot
 plt.figure(figsize=(10, 6))
 
 for optimization in optimizations_order:
@@ -49,17 +49,17 @@ for optimization in optimizations_order:
 
 plt.xlabel('Dataset')
 plt.ylabel('Execution Time (s)')
-plt.title('Runtimes for Optimization and Datasets')
-plt.legend()
+plt.title('Runtimes by Optimization and Dataset')
+plt.legend(title='Optimizations')
 plt.grid(True)
-plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
+plt.yscale('log')  # Use a logarithmic scale for Y-axis
 plt.tight_layout()
 plt.savefig('execution_times_plot.png')
 
-# Crea la directory per i grafici dei dataset se non esiste
+# Create the directory for dataset-specific plots if it doesn't exist
 os.makedirs('dataset_plots', exist_ok=True)
 
-# Definisci una mappa di colori per le ottimizzazioni
+# Define a color map for optimizations
 optimization_colors = {
     'SEQUENTIAL': 'blue',
     'PARALLEL': 'orange',
@@ -68,7 +68,7 @@ optimization_colors = {
     'TARGET': 'purple'
 }
 
-# Genera un bar chart per ogni dataset
+# Generate a bar chart for each dataset
 for dataset in datasets_order:
     times = []
     colors = []
@@ -78,14 +78,14 @@ for dataset in datasets_order:
         if time is not None:
             times.append(time)
             optimizations.append(optimization)
-            # Ottieni il colore per l'ottimizzazione corrente
+            # Get the color for the current optimization
             color = optimization_colors.get(optimization, 'gray')
             colors.append(color)
         else:
-            print(f"Attenzione: Nessun dato per {optimization} su {dataset}")
+            print(f"Warning: No data for {optimization} on {dataset}")
 
     if not times:
-        print(f"Nessun dato disponibile per il dataset {dataset}.")
+        print(f"No data available for dataset {dataset}.")
         continue
 
     plt.figure(figsize=(8, 6))
@@ -94,60 +94,52 @@ for dataset in datasets_order:
     plt.ylabel('Execution Time (s)')
     plt.title(f'Execution Times for {dataset}')
     plt.grid(True, axis='y', linestyle='--', linewidth=0.5)
-    plt.yscale('log')  # Usa una scala logaritmica per l'asse Y
+    plt.yscale('log')  # Use a logarithmic scale for Y-axis
 
-    # Aggiungi i valori sopra le barre
+    # Add values above the bars
     for i, time in enumerate(times):
         plt.text(i, time, f'{time:.2e}', ha='center', va='bottom', fontsize=8)
 
     plt.tight_layout()
-    # Salva il grafico nella cartella dataset_plots
+    # Save the plot in the dataset_plots folder
     plt.savefig(f'dataset_plots/execution_times_{dataset}.png')
     plt.close()
+    
+# Generate the speedup plot for all optimizations and datasets
+plt.figure(figsize=(10, 6))
 
-# Crea la directory per i grafici dello speedup se non esiste
-os.makedirs('speedup_plots', exist_ok=True)
-
-# Genera lo speedup per ogni dataset rispetto a SEQ
-for dataset in datasets_order:
-    sequential_time = data.get('SEQUENTIAL', {}).get(dataset, None)
-    if sequential_time is None:
-        print(f"Attenzione: Tempo sequenziale non disponibile per il dataset {dataset}.")
-        continue
-
+for optimization in optimizations_order:
+    if optimization == 'SEQUENTIAL':
+        continue  # Skip sequential optimization
     speedups = []
-    optimizations = []
-    colors = []
-
-    for optimization in optimizations_order:
-        if optimization == 'SEQUENTIAL':
-            continue  # Salta l'ottimizzazione sequenziale
+    for dataset in datasets_order:
+        sequential_time = data.get('SEQUENTIAL', {}).get(dataset, None)
         opt_time = data.get(optimization, {}).get(dataset, None)
-        if opt_time is not None and sequential_time is not None:
-            speedup = sequential_time / opt_time
-            speedups.append(speedup)
-            optimizations.append(optimization)
-            # Colori per le ottimizzazioni
-            colors.append(optimization_colors.get(optimization, 'gray'))
+        if sequential_time is not None and opt_time is not None:
+            speedups.append(sequential_time / opt_time)
         else:
-            print(f"Attenzione: Nessun dato per {optimization} su {dataset}.")
+            speedups.append(None)  # Missing value
 
-    if not speedups:
-        print(f"Nessun dato disponibile per il calcolo dello speedup del dataset {dataset}.")
-        continue
+    # Add the line for the optimization
+    plt.plot(
+        datasets_order,
+        speedups,
+        marker='o',
+        label=optimization,
+        color=optimization_colors.get(optimization, 'gray')
+    )
 
-    plt.figure(figsize=(8, 6))
-    plt.bar(optimizations, speedups, color=colors)
-    plt.xlabel('Ottimizzazione')
-    plt.ylabel('Speedup (Seq / Ottimizzazione)')
-    plt.title(f'Speedup per {dataset}')
-    plt.grid(True, axis='y', linestyle='--', linewidth=0.5)
+# Graph configuration
+plt.axhline(y=1, color='black', linestyle='--', linewidth=1, label='Speedup = 1')  # Horizontal line at 1
+plt.text(datasets_order[0], 1.1, 'No Speedup', fontsize=10, color='black')  # Label above the line
 
-    # Aggiungi i valori sopra le barre
-    for i, speedup in enumerate(speedups):
-        plt.text(i, speedup, f'{speedup:.2f}', ha='center', va='bottom', fontsize=8)
+plt.xlabel('Dataset')
+plt.ylabel('Speedup (Sequential / Optimization)')
+plt.title('Speedup by Dataset and Optimization')
+plt.legend(title='Optimizations')
+plt.grid(True, linestyle='--', linewidth=0.5)
+plt.tight_layout()
 
-    plt.tight_layout()
-    # Salva il grafico nella cartella speedup_plots
-    plt.savefig(f'speedup_plots/speedup_{dataset}.png', dpi=300)
-    plt.close()
+# Save the plot
+os.makedirs('speedup_plots', exist_ok=True)
+plt.savefig('speedup_plots/speedup_all_datasets.png', dpi=300)
