@@ -188,7 +188,6 @@ static void kernel_atax(int nx, int ny,
     #pragma omp target teams distribute parallel for
     for (int j = 0; j < _PB_NY; j++) {
       for (int i = 0; i < _PB_NX; i++) {
-        #pragma omp atomic
         y[j] += A[i][j] * tmp[i];
       }
     }
