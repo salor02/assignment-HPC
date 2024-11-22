@@ -105,33 +105,18 @@ static void kernel_atax(int nx, int ny,
   for (i = 0; i < _PB_NY; i++)
     y[i] = 0;
 
-#pragma omp parallel for
-  for (i = 0; i < _PB_NX; i++)
-  {
-    double sum = 0;              // Variabile temporanea per accumulare il risultato parziale di tmp[i]
-
-#pragma omp parallel for reduction(+ : sum)
-    for (j = 0; j < _PB_NY; j++) // Ciclo sulle colonne della matrice A (lunghezza di x)
-    {
-      sum += A[i][j] * x[j];
+#pragma omp parallel for reduction(+:tmp[:_PB_NX])
+for (int i = 0; i < _PB_NX; i++) {
+    for (int j = 0; j < _PB_NY; j++) {
+        tmp[i] += A[i][j] * x[j]; // Accumulate directly into tmp[i]
     }
-
-    tmp[i] = sum; // Salva il risultato finale nella posizione corretta
-  }
-
-#pragma omp parallel for
-  for (j = 0; j < _PB_NY; j++) // Ciclo sulle colonne della matrice A
-  {
-    double sum = 0;              // Variabile temporanea per l'accumulo parziale
-
-#pragma omp parallel for reduction(+ : sum)
-    for (i = 0; i < _PB_NX; i++) // Ciclo sulle righe della matrice A
-    {
-      sum += A[i][j] * tmp[i];
+}
+#pragma omp parallel for reduction(+:y[:_PB_NY])
+for (int j = 0; j < _PB_NY; j++) {
+    for (int i = 0; i < _PB_NX; i++) {
+        y[j] += A[i][j] * tmp[i]; // Accumulate directly into y[j]
     }
-
-    y[j] = sum; // Assegna il risultato finale a y[j]
-  }
+}
 
 // // _________SOLUZIONE PARALLEL FOR + COLLAPSE___________
 #elif defined COLLAPSE
@@ -141,27 +126,18 @@ static void kernel_atax(int nx, int ny,
     y[i] = 0;
 
 // Inizializza tmp a zero prima del ciclo parallelo
-#pragma omp parallel for
-  for (int i = 0; i < _PB_NX; i++)
-    tmp[i] = 0;
-
-#pragma omp parallel for collapse(2)
-  for (int i = 0; i < _PB_NX; i++)
-  {
-    for (int j = 0; j < _PB_NY; j++)
-    {
-      tmp[i] += A[i][j] * x[j];
+#pragma omp parallel for collapse(2) reduction(+:tmp[:_PB_NX])
+for (int i = 0; i < _PB_NX; i++) {
+    for (int j = 0; j < _PB_NY; j++) {
+        tmp[i] += A[i][j] * x[j]; // Accumulate directly into tmp[i]
     }
-  }
-
-#pragma omp parallel for collapse(2)
-  for (int j = 0; j < _PB_NY; j++)
-  {
-    for (int i = 0; i < _PB_NX; i++)
-    {
-      y[j] += A[i][j] * tmp[i];
+}
+#pragma omp parallel for collapse(2) reduction(+:y[:_PB_NY])
+for (int j = 0; j < _PB_NY; j++) {
+    for (int i = 0; i < _PB_NX; i++) {
+        y[j] += A[i][j] * tmp[i]; // Accumulate directly into y[j]
     }
-  }
+}
 
  
 // _________SOLUZIONE TARGET___________
