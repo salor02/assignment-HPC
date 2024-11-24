@@ -52,6 +52,8 @@ static void kernel_atax(int nx, int ny,
                         DATA_TYPE POLYBENCH_1D(y, NY, ny),         // Vettore y di dimensione ny (output)
                         DATA_TYPE POLYBENCH_1D(tmp, NX, nx))       // Vettore temporaneo tmp di dimensione nx
 {
+  omp_set_num_threads(4);
+
   int i, j;
   //___________SOLUZIONE SEQUENZIALE___________
 

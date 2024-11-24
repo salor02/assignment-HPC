@@ -14,7 +14,7 @@ CC=clang
 LD=ld
 OBJDUMP=objdump
 
-OPT=-O2 -g
+OPT=-O0 -g
 OMP=-fopenmp=libomp -fopenmp-targets=nvptx64-nvidia-cuda
 CFLAGS=$(OPT) $(OMP) -I. $(EXT_CFLAGS)
 LDFLAGS=-lm $(EXT_LDFLAGS)
