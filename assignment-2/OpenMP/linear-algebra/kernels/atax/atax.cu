@@ -2,6 +2,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <math.h>
+#include <cuda_runtime.h>
+
+#define BLOCK_SIZE 256
 
 /* Include polybench common header. */
 #include <polybench.h>
@@ -45,43 +48,8 @@ static void print_array(int nx,
   fprintf(stderr, "\n");
 }
 
-/* Funzione principale di calcolo, che implementa l'algoritmo ATAx. */
-static void kernel_atax(int nx, int ny,
-                        DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
-                        DATA_TYPE POLYBENCH_1D(x, NY, ny),         // Vettore x di dimensione ny
-                        DATA_TYPE POLYBENCH_1D(y, NY, ny),         // Vettore y di dimensione ny (output)
-                        DATA_TYPE POLYBENCH_1D(tmp, NX, nx))       // Vettore temporaneo tmp di dimensione nx
-{
-  omp_set_num_threads(4);
 
-  int i, j;
-  //___________SOLUZIONE SEQUENZIALE___________
-
-  // Inizializza l'array y a zero
-  for (i = 0; i < _PB_NY; i++)
-    y[i] = 0;
-
-  // Calcola il prodotto matrice-vettore: A * x
-  // tmp[i] conterrà il risultato della moltiplicazione della riga i della matrice A per il vettore x
-  for (i = 0; i < _PB_NX; i++) // Ciclo sulle righe della matrice A
-  {
-    tmp[i] = 0;                         // Inizializza tmp[i] a zero
-    for (j = 0; j < _PB_NY; j++)        // Ciclo sulle colonne della matrice A (lunghezza di x)
-      tmp[i] = tmp[i] + A[i][j] * x[j]; // Somma il prodotto A[i][j] * x[j] nel vettore tmp[i]
-
-    // Ora aggiorna il vettore y con il risultato della moltiplicazione riga di A * tmp
-    for (j = 0; j < _PB_NY; j++)
-      y[j] = y[j] + A[i][j] * tmp[i]; // Somma il prodotto A[i][j] * tmp[i] nel vettore y
-  }
-
-}
-
-#include <cuda_runtime.h>
-#include <stdio.h>
-
-#define BLOCK_SIZE 256
-
-
+//+++++++++++++++++++++++++++++ KERNELS CUDA +++++++++++++++++++++++++++++
 //_______________________________________________________ SOLUZIONE BASE
 // Primo kernel: Calcola tmp[i] = A[i][:] * x
 __global__ void compute_tmp(const float *A, const float *x, float *tmp) {
@@ -248,8 +216,15 @@ __global__ void compute_y_transposed(const float *A_T, const float *tmp, float *
 }
 
 
-// Funzione principale
-void atax_cuda(float *A, float *x, float *y) {
+/* Funzione principale di calcolo, che implementa l'algoritmo ATAx. 
+    VERSIONE CUDA
+ */
+
+void kernel_atax_cuda(int nx, int ny,
+                        DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
+                        DATA_TYPE POLYBENCH_1D(x, NY, ny),         // Vettore x di dimensione ny
+                        DATA_TYPE POLYBENCH_1D(y, NY, ny))         // Vettore y di dimensione ny (output)
+  {
     // Allocazione memoria sulla GPU
     float *d_A, *d_x, *d_tmp, *d_y;
     cudaMalloc(&d_A, NX * NY * sizeof(float));
@@ -280,6 +255,33 @@ void atax_cuda(float *A, float *x, float *y) {
     cudaFree(d_y);
 }
 
+/* Funzione principale di calcolo, che implementa l'algoritmo ATAx. 
+    VERSIONE SEQUENZIALE
+ */
+static void kernel_atax_seq(int nx, int ny,
+                        DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
+                        DATA_TYPE POLYBENCH_1D(x, NY, ny),         // Vettore x di dimensione ny
+                        DATA_TYPE POLYBENCH_1D(y, NY, ny),         // Vettore y di dimensione ny (output)
+                        DATA_TYPE POLYBENCH_1D(tmp, NX, nx))       // Vettore temporaneo tmp di dimensione nx
+{
+  int i, j;
+  // Inizializza l'array y a zero
+  for (i = 0; i < _PB_NY; i++)
+    y[i] = 0;
+
+  // Calcola il prodotto matrice-vettore: A * x
+  // tmp[i] conterrà il risultato della moltiplicazione della riga i della matrice A per il vettore x
+  for (i = 0; i < _PB_NX; i++) // Ciclo sulle righe della matrice A
+  {
+    tmp[i] = 0;                         // Inizializza tmp[i] a zero
+    for (j = 0; j < _PB_NY; j++)        // Ciclo sulle colonne della matrice A (lunghezza di x)
+      tmp[i] = tmp[i] + A[i][j] * x[j]; // Somma il prodotto A[i][j] * x[j] nel vettore tmp[i]
+
+    // Ora aggiorna il vettore y con il risultato della moltiplicazione riga di A * tmp
+    for (j = 0; j < _PB_NY; j++)
+      y[j] = y[j] + A[i][j] * tmp[i]; // Somma il prodotto A[i][j] * tmp[i] nel vettore y
+  }
+}
 
 int main(int argc, char **argv)
 {
@@ -299,14 +301,16 @@ int main(int argc, char **argv)
   /* Avvia il timer per misurare il tempo di esecuzione del calcolo. */
   polybench_start_instruments;
 
-  /* Esegui il kernel ATAx (calcolo principale). */
-//   kernel_atax(nx, ny,
-//               POLYBENCH_ARRAY(A),
-//               POLYBENCH_ARRAY(x),
-//               POLYBENCH_ARRAY(y),
-//               POLYBENCH_ARRAY(tmp));
+  /* Chiamata alla funzione principale di calcolo sequenziale.  
+  kernel_atax_seq(nx, ny,
+              POLYBENCH_ARRAY(A),
+              POLYBENCH_ARRAY(x),
+              POLYBENCH_ARRAY(y),
+              POLYBENCH_ARRAY(tmp));
+    */
 
-    atax_cuda( POLYBENCH_ARRAY(A),
+   // Chiamata alla funzione principale di calcolo parallelo
+    kernel_atax_cuda( POLYBENCH_ARRAY(A),
               POLYBENCH_ARRAY(x),
               POLYBENCH_ARRAY(y) // Questo va inserito per riottenere il risultato
               // Invece tmp non è necessario, perché può crearlo direttamente la funzione
