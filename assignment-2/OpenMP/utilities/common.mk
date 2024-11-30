@@ -34,7 +34,7 @@ NVCCFLAGS += $(EXTRA_NVFLAGS)
 SRCS := polybench.cu atax.cu
 OBJDIR := obj
 OBJS := $(addprefix $(OBJDIR)/, $(SRCS:.cu=.o))
-EXE := cholesky_acc
+EXE := atax_acc
 
 # Targets
 .PHONY: all clean profile run
