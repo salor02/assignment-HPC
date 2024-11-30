@@ -1,71 +1,68 @@
-ifndef CUDA_HOME
-CUDA_HOME:=/usr/local/cuda
+# Prevent implicit rules
+MAKEFLAGS += -r
+
+CUDA_HOME := /usr/local/cuda
+LIB_PATHS := /usr/ext/lib:$(CUDA_HOME)/lib
+
+# Compiler and tools
+CXX := gcc
+NVCC := $(CUDA_HOME)/bin/nvcc
+
+# Flags
+DATASET_TYPE ?= MINI_DATASET        # Default dataset type
+DUMP_ARRAYS ?= 0                    # Default: do not dump arrays (0)
+
+CXXFLAGS := -O2 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE)
+NVCCFLAGS := $(CXXFLAGS) -lineinfo
+LDFLAGS := -L$(CUDA_HOME)/lib -lcudart
+
+# Add extra flags for dumping arrays
+ifeq ($(DUMP_ARRAYS), 1)
+CXXFLAGS += -DPOLYBENCH_DUMP_ARRAYS
+NVCCFLAGS += -DPOLYBENCH_DUMP_ARRAYS
 endif
-NVCC=$(CUDA_HOME)/bin/nvcc
-NVOPT:=-Xcompiler -fopenmp -lineinfo 
-LDFLAGS:=-lm -lcudart $(EXT_LDFLAGS)
-NVCFLAGS:=$(CXXFLAGS) $(NVOPT)
-NVLDFLAGS:=$(LDFLAGS) -lgomp
 
+# Enable debugging
+DEBUG_FLAGS := -g -G
+RELEASE_FLAGS := -O3
 
-INCPATHS = -I$(UTIL_DIR)
+# Add extra flags via command line
+CXXFLAGS += $(EXTRA_CXXFLAGS)
+NVCCFLAGS += $(EXTRA_NVFLAGS)
 
-BENCHMARK = $(shell basename `pwd`)
-EXE = $(BENCHMARK)_acc
-SRC = $(BENCHMARK).c
-HEADERS = $(BENCHMARK).h
+# Source files and directories
+SRCS := polybench.cu cholesky.cu
+OBJDIR := obj
+OBJS := $(addprefix $(OBJDIR)/, $(SRCS:.cu=.o))
+EXE := cholesky_acc
 
-SRC += $(UTIL_DIR)/polybench.c
+# Targets
+.PHONY: all clean profile run
 
-DEPS        := Makefile.dep
-DEP_FLAG    := -MM
+# Default target
+all: $(EXE)
 
-CC=clang
-LD=ld
-OBJDUMP=objdump
-
-OPT=-O0 -g
-OMP=-fopenmp=libomp -fopenmp-targets=nvptx64-nvidia-cuda
-CFLAGS=$(OPT) $(OMP) -I. $(EXT_CFLAGS)
-# LDFLAGS=-lm $(EXT_LDFLAGS) VIENE MESSO GIà SOPRA
-
-$(EXE):	$(OBJS)
-	$(MKDIR_P) $(dir $@)
-	$(NVCC) $(NVCFLAGS) $(OBJS) -o $@ $(NVLDFLAGS)
-
-$(BUILD_DIR)/%.cu.o: %.cu
-	$(MKDIR_P) $(dir $@)
-	$(NVCC) $(NVCFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/%.cpp.o: %.cpp
-	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-
-.PHONY: all exe clean veryclean
-
-all : exe
-
-.PHONY: run profile clean
 run: $(EXE)
 	./$(EXE)
 
+# Linking
+$(EXE): $(OBJS)
+	$(NVCC) $(NVCCFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Compiling
+$(OBJDIR)/%.o: %.cu | $(OBJDIR)
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+
+# Ensure the object directory exists
+$(OBJDIR):
+	mkdir -p $@
+
+# Profiling target
 profile: $(EXE)
-	sudo $(CUDA_HOME)/bin/nvprof --unified-memory-profiling off ./$(EXE)
+	LD_LIBRARY_PATH=$(LIB_PATHS):$(LD_LIBRARY_PATH) \
+	LIBRARY_PATH=$(LIB_PATHS):$(LIBRARY_PATH) \
+	sudo $(CUDA_HOME)/bin/nvprof ./$(EXE)
 
-metrics: $(EXE)
-	sudo $(CUDA_HOME)/bin/nvprof --print-gpu-trace --metrics "eligible_warps_per_cycle,achieved_occupancy,sm_efficiency,ipc" ./$(EXE)
-
+# Cleaning target
 clean:
-	-rm -fr $(BUILD_DIR) *.exe *.out *~
-
-MKDIR_P ?= mkdir -p
-
-$(DEPS): $(SRC) $(HEADERS)
-	$(CC) $(INCPATHS) $(DEP_FLAG) $(SRC) > $(DEPS)
-
--include $(DEPS)
+	rm -rf $(OBJDIR) $(EXE)
