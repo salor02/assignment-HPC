@@ -31,7 +31,7 @@ CXXFLAGS += $(EXTRA_CXXFLAGS)
 NVCCFLAGS += $(EXTRA_NVFLAGS)
 
 # Source files and directories
-SRCS := polybench.cu cholesky.cu
+SRCS := polybench.cu atax.cu
 OBJDIR := obj
 OBJS := $(addprefix $(OBJDIR)/, $(SRCS:.cu=.o))
 EXE := cholesky_acc
