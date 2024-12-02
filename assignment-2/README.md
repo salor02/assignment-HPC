@@ -3,13 +3,17 @@
 ### Compilazione e Esecuzione Base
 Per compilare il codice ed eseguirlo:
 ```bash
-make EXT_CFLAGS="-DPOLYBENCH_TIME" clean all run
+ make EXERCISE=atax.cu DATASET_TYPE=DIMENSIONE_DATASET OPTIMIZATION=OPTIMIZATION_N clean run
+```
+Per profilare l'esecuzione:
+```bash
+ make EXERCISE=atax.cu DATASET_TYPE=DIMENSIONE_DATASET OPTIMIZATION=OPTIMIZATION_N clean profile
 ```
 
 ### Compilazione con Dump degli Array
 Per fare il dump degli array, usare:
 ```bash
-make EXT_CFLAGS="-DPOLYBENCH_TIME -DPOLYBENCH_DUMP_ARRAYS" clean all run
+make EXERCISE=atax.cu DATASET_TYPE=DIMENSIONE_DATASET DUMP_ARRAYS=1 OPTIMIZATION=OPTIMIZATION_N clean run
 ```
 
 L'esecuzione successiva produrrà il file di dump con il seguente comando:
@@ -35,33 +39,13 @@ Per validare i risultati di un tipo di ottimizzazione:
 ./validate.sh {TIPO_OTTIMIZZAZIONE}
 ```
 
-## Cambiare la Dimensione del Dataset
-
-Per cambiare la dimensione del dataset, utilizzare:
-```bash
-make EXT_CFLAGS="-DPOLYBENCH_TIME -D{DIMENSIONE_DATASET}" clean all run
-```
-
-#### Esempio
-Ad esempio, per usare un dataset ridotto:
-```bash
-make EXT_CFLAGS="-DPOLYBENCH_TIME -DMINI_DATASET" clean all run
-```
 
 ## Task da Completare
 
-1. Generare il dump per le varie dimensioni di dataset:
-   - `DUMP_SMALL_SEQ`
-   - `DUMP_STANDARD_SEQ`
-   - `DUMP_LARGE_SEQ`
-   - `DUMP_EXTRALARGE_SEQ`
-  
-2. Decidere quali ottimizzazioni usare e generare i rispettivi dump
-3. Controllare con i dump che non ci siano errori logici
-4. Raccogliere i tempi di esecuzioni delle varie ottimizzazioni con le varie dimensioni dei dataset
-   Quindi per ogni ottimizzazione i tempi di esecuzione con ogni dataset
-5. Profilare l'esecuzione sequenziale e le esecuzioni parallelizzate 
-   
+1. Modificare gli script per:
+   - dump.sh
+   - validate.sh
+   - run.sh   
 
 ## Nota Importante
 
