@@ -7,7 +7,7 @@
 #define BLOCK_SIZE 256
 
 /* Include polybench common header. */
-#include <polybench.h>
+#include "polybench.h"
 
 /* Include benchmark-specific header. */
 /* Default data type is double, default size is 4000. */
@@ -106,7 +106,7 @@ __global__ void compute_tmp_shared(const float *A, const float *x, float *tmp) {
     }
 }
 
-__global__ void compute_y_shared(const float *A, const float *tmp, float *y, int NX, int NY) {
+__global__ void compute_y_shared(const float *A, const float *tmp, float *y) {
     __shared__ float tmp_shared[BLOCK_SIZE]; // Shared memory per tmp
 
     int col = blockIdx.x * blockDim.x + threadIdx.x; // Colonna processata dal thread
@@ -141,38 +141,40 @@ __global__ void compute_y_shared(const float *A, const float *tmp, float *y, int
 }
 
 //_______________________________________________________ SOLUZIONE CON SHARED MEMORY E A TRASPOSTA
-__global__ void compute_tmp_shared(const float *A, const float *x, float *tmp) {
-    __shared__ float x_shared[BLOCK_SIZE]; // Memoria condivisa per x
 
-    int row = blockIdx.x * blockDim.x + threadIdx.x; // Riga processata dal thread
-    int tx = threadIdx.x;                           // Indice thread nel blocco
+// La commento perché è stata già definita sopra
+// __global__ void compute_tmp_shared(const float *A, const float *x, float *tmp) {
+//     __shared__ float x_shared[BLOCK_SIZE]; // Memoria condivisa per x
 
-    float sum = 0.0;
+//     int row = blockIdx.x * blockDim.x + threadIdx.x; // Riga processata dal thread
+//     int tx = threadIdx.x;                           // Indice thread nel blocco
 
-    // Carica x nella shared memory, in blocchi
-    for (int tile = 0; tile < (NY + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
-        if (tile * BLOCK_SIZE + tx < NY) {
-            x_shared[tx] = x[tile * BLOCK_SIZE + tx];
-        }
-        else {
-            x_shared[tx] = 0.0; // Fuori dai limiti di x
-        }
-        __syncthreads(); // Assicura che tutti i thread abbiano caricato x
+//     float sum = 0.0;
 
-        // Usa x_shared per calcolare tmp[row]
-        for (int j = 0; j < BLOCK_SIZE && tile * BLOCK_SIZE + j < NY; ++j) {
-            sum += A[row * NY + tile * BLOCK_SIZE + j] * x_shared[j];
-        }
+//     // Carica x nella shared memory, in blocchi
+//     for (int tile = 0; tile < (NY + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
+//         if (tile * BLOCK_SIZE + tx < NY) {
+//             x_shared[tx] = x[tile * BLOCK_SIZE + tx];
+//         }
+//         else {
+//             x_shared[tx] = 0.0; // Fuori dai limiti di x
+//         }
+//         __syncthreads(); // Assicura che tutti i thread abbiano caricato x
 
-        __syncthreads(); // Prima di ricaricare la shared memory
-    }
+//         // Usa x_shared per calcolare tmp[row]
+//         for (int j = 0; j < BLOCK_SIZE && tile * BLOCK_SIZE + j < NY; ++j) {
+//             sum += A[row * NY + tile * BLOCK_SIZE + j] * x_shared[j];
+//         }
 
-    if (row < NX) {
-        tmp[row] = sum;
-    }
-}
+//         __syncthreads(); // Prima di ricaricare la shared memory
+//     }
 
-__global__ void transpose_matrix(const float *A, float *A_T, int NX, int NY) {
+//     if (row < NX) {
+//         tmp[row] = sum;
+//     }
+// }
+
+__global__ void transpose_matrix(const float *A, float *A_T) {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -181,7 +183,7 @@ __global__ void transpose_matrix(const float *A, float *A_T, int NX, int NY) {
     }
 }
 
-__global__ void compute_y_transposed(const float *A_T, const float *tmp, float *y, int NX, int NY) {
+__global__ void compute_y_transposed(const float *A_T, const float *tmp, float *y) {
     __shared__ float tmp_shared[BLOCK_SIZE]; // Memoria condivisa per tmp
 
     int col = blockIdx.x * blockDim.x + threadIdx.x; // Colonna processata dal thread
@@ -220,8 +222,7 @@ __global__ void compute_y_transposed(const float *A_T, const float *tmp, float *
     VERSIONE CUDA
  */
 
-void kernel_atax_cuda(int nx, int ny,
-                        DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
+void kernel_atax_cuda(  DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
                         DATA_TYPE POLYBENCH_1D(x, NY, ny),         // Vettore x di dimensione ny
                         DATA_TYPE POLYBENCH_1D(y, NY, ny))         // Vettore y di dimensione ny (output)
   {
@@ -314,7 +315,7 @@ int main(int argc, char **argv)
               POLYBENCH_ARRAY(x),
               POLYBENCH_ARRAY(y) // Questo va inserito per riottenere il risultato
               // Invece tmp non è necessario, perché può crearlo direttamente la funzione
-         )
+         );
 
   /* Ferma il timer e stampa i risultati delle misurazioni. */
   polybench_stop_instruments;

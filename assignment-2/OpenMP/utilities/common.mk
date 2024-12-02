@@ -12,7 +12,7 @@ NVCC := $(CUDA_HOME)/bin/nvcc
 DATASET_TYPE ?= MINI_DATASET        # Default dataset type
 DUMP_ARRAYS ?= 0                    # Default: do not dump arrays (0)
 
-CXXFLAGS := -O2 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE)
+CXXFLAGS := -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE)
 NVCCFLAGS := $(CXXFLAGS) -lineinfo
 LDFLAGS := -L$(CUDA_HOME)/lib -lcudart
 
@@ -31,7 +31,7 @@ CXXFLAGS += $(EXTRA_CXXFLAGS)
 NVCCFLAGS += $(EXTRA_NVFLAGS)
 
 # Source files and directories
-SRCS := polybench.cu atax.cu
+SRCS := $(UTIL_DIR)/polybench.cu atax.cu
 OBJDIR := obj
 OBJS := $(addprefix $(OBJDIR)/, $(SRCS:.cu=.o))
 EXE := atax_acc
