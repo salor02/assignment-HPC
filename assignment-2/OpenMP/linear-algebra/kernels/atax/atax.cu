@@ -53,6 +53,7 @@ static void print_array(int nx,
 //_______________________________________________________ SOLUZIONE BASE
 // Primo kernel: Calcola tmp[i] = A[i][:] * x
 __global__ void compute_tmp(const float *A, const float *x, float *tmp) {
+
     int row = blockIdx.x * blockDim.x + threadIdx.x; // Ogni thread processa una riga
     if (row < NX) {
         float sum = 0.0;
@@ -141,43 +142,11 @@ __global__ void compute_y_shared(const float *A, const float *tmp, float *y) {
 }
 
 //_______________________________________________________ SOLUZIONE CON SHARED MEMORY E A TRASPOSTA
-
-// La commento perché è stata già definita sopra
-// __global__ void compute_tmp_shared(const float *A, const float *x, float *tmp) {
-//     __shared__ float x_shared[BLOCK_SIZE]; // Memoria condivisa per x
-
-//     int row = blockIdx.x * blockDim.x + threadIdx.x; // Riga processata dal thread
-//     int tx = threadIdx.x;                           // Indice thread nel blocco
-
-//     float sum = 0.0;
-
-//     // Carica x nella shared memory, in blocchi
-//     for (int tile = 0; tile < (NY + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
-//         if (tile * BLOCK_SIZE + tx < NY) {
-//             x_shared[tx] = x[tile * BLOCK_SIZE + tx];
-//         }
-//         else {
-//             x_shared[tx] = 0.0; // Fuori dai limiti di x
-//         }
-//         __syncthreads(); // Assicura che tutti i thread abbiano caricato x
-
-//         // Usa x_shared per calcolare tmp[row]
-//         for (int j = 0; j < BLOCK_SIZE && tile * BLOCK_SIZE + j < NY; ++j) {
-//             sum += A[row * NY + tile * BLOCK_SIZE + j] * x_shared[j];
-//         }
-
-//         __syncthreads(); // Prima di ricaricare la shared memory
-//     }
-
-//     if (row < NX) {
-//         tmp[row] = sum;
-//     }
-// }
+// La funzione per calcolare tmp_shared è la stessa della versione con shared memory
 
 __global__ void transpose_matrix(const float *A, float *A_T) {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
-
     if (row < NX && col < NY) {
         A_T[col * NX + row] = A[row * NY + col]; // Trasporre gli elementi
     }
@@ -238,13 +207,41 @@ void kernel_atax_cuda(  DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A 
     cudaMemcpy(d_x, x, NY * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemset(d_y, 0, NY * sizeof(float)); // Inizializza y a zero, senza bisogno di copiarlo
 
-    // Lancia il primo kernel
+    // Calcola le dimensioni della griglia
     int grid_size_tmp = (NX + BLOCK_SIZE - 1) / BLOCK_SIZE;
-    compute_tmp<<<grid_size_tmp, BLOCK_SIZE>>>(d_A, d_x, d_tmp);
-
-    // Lancia il secondo kernel
     int grid_size_y = (NY + BLOCK_SIZE - 1) / BLOCK_SIZE;
+
+    #if defined OPTIMIZATION_1
+    // Lancia il primo kernel
+    compute_tmp<<<grid_size_tmp, BLOCK_SIZE>>>(d_A, d_x, d_tmp);
+    // Lancia il secondo kernel
     compute_y<<<grid_size_y, BLOCK_SIZE>>>(d_A, d_tmp, d_y);
+
+    #elif defined OPTIMIZATION_2
+    // Lancia il primo kernel con shared memory
+    compute_tmp_shared<<<grid_size_tmp, BLOCK_SIZE>>>(d_A, d_x, d_tmp);
+    // Lancia il secondo kernel con shared memory
+    compute_y_shared<<<grid_size_y, BLOCK_SIZE>>>(d_A, d_tmp, d_y);
+
+    #elif defined OPTIMIZATION_3
+    // Allocazione memoria per la matrice trasposta
+    float *d_A_T;
+    cudaMalloc(&d_A_T, NX * NY * sizeof(float));
+    // Calcola le dimensioni della griglia per la trasposizione
+    dim3 dimGrid((NY + BLOCK_SIZE - 1) / BLOCK_SIZE, (NX + BLOCK_SIZE - 1) / BLOCK_SIZE);
+    // Lancia il kernel per la trasposizione
+    transpose_matrix<<<dimGrid, dim3(BLOCK_SIZE, BLOCK_SIZE)>>>(d_A, d_A_T);
+    // Lancia il primo kernel con shared memory
+    compute_tmp_shared<<<grid_size_tmp, BLOCK_SIZE>>>(d_A, d_x, d_tmp);
+    // Lancia il secondo kernel con shared memory
+    compute_y_transposed<<<grid_size_y, BLOCK_SIZE>>>(d_A_T, d_tmp, d_y);
+    // Deallocazione memoria per la matrice trasposta
+    cudaFree(d_A_T);
+
+    #endif
+
+
+
 
     // Copia il risultato finale dalla GPU alla CPU
     cudaMemcpy(y, d_y, NY * sizeof(float), cudaMemcpyDeviceToHost);
@@ -302,20 +299,22 @@ int main(int argc, char **argv)
   /* Avvia il timer per misurare il tempo di esecuzione del calcolo. */
   polybench_start_instruments;
 
-  /* Chiamata alla funzione principale di calcolo sequenziale.  
+  #ifdef SEQUENTIAL
+  //STAMPA CIAO
+  // Chiamata alla funzione principale di calcolo sequenziale.  
   kernel_atax_seq(nx, ny,
               POLYBENCH_ARRAY(A),
               POLYBENCH_ARRAY(x),
               POLYBENCH_ARRAY(y),
               POLYBENCH_ARRAY(tmp));
-    */
-
+    #else
    // Chiamata alla funzione principale di calcolo parallelo
     kernel_atax_cuda( POLYBENCH_ARRAY(A),
               POLYBENCH_ARRAY(x),
               POLYBENCH_ARRAY(y) // Questo va inserito per riottenere il risultato
               // Invece tmp non è necessario, perché può crearlo direttamente la funzione
          );
+    #endif
 
   /* Ferma il timer e stampa i risultati delle misurazioni. */
   polybench_stop_instruments;

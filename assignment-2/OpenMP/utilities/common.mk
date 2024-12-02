@@ -11,8 +11,10 @@ NVCC := $(CUDA_HOME)/bin/nvcc
 # Flags
 DATASET_TYPE ?= MINI_DATASET        # Default dataset type
 DUMP_ARRAYS ?= 0                    # Default: do not dump arrays (0)
+OPTIMIZATION ?= SEQUENTIAL  		# Default: esecuzione sequenziale
 
-CXXFLAGS := -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE)
+
+CXXFLAGS := -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE) -D$(OPTIMIZATION)
 NVCCFLAGS := $(CXXFLAGS) -lineinfo
 LDFLAGS := -L$(CUDA_HOME)/lib -lcudart
 
