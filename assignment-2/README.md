@@ -5,6 +5,10 @@ Per compilare il codice ed eseguirlo:
 ```bash
  make EXERCISE=atax.cu DATASET_TYPE=DIMENSIONE_DATASET OPTIMIZATION=OPTIMIZATION_N clean run
 ```
+Ad esempio: 
+```bash
+ make EXERCISE=atax.cu DATASET_TYPE=STANDARD_DATASET OPTIMIZATION=OPTIMIZATION_2 clean run
+```
 Per profilare l'esecuzione:
 ```bash
  make EXERCISE=atax.cu DATASET_TYPE=DIMENSIONE_DATASET OPTIMIZATION=OPTIMIZATION_N clean profile
