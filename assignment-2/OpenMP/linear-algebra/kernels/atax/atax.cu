@@ -122,7 +122,6 @@ void ataxGpu(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_TYPE 
     //Stampa di y:
 	
 	cudaMemcpy(y, y_gpu, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
-    fprintf(stderr, "y_outputFromGpu[0] = %f\n", y_outputFromGpu[0]);
 
 	cudaFree(A_gpu);
 	cudaFree(x_gpu);
