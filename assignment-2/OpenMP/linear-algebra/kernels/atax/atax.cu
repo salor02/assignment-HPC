@@ -85,24 +85,28 @@ __global__ void compute_y(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DATA_TYPE 
     VERSIONE CUDA
  */
 
-void ataxGpu(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_TYPE POLYBENCH_1D(x,NX,nx), DATA_TYPE POLYBENCH_1D(y,NY,ny), 
-		DATA_TYPE POLYBENCH_1D(tmp,NX,nx), DATA_TYPE POLYBENCH_1D(y_outputFromGpu,NY,ny))
+void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_TYPE POLYBENCH_1D(x,NX,nx), DATA_TYPE POLYBENCH_1D(y,NY,ny), 
+		DATA_TYPE POLYBENCH_1D(tmp,NX,nx))
 {
-	DATA_TYPE *A_gpu;
-	DATA_TYPE *x_gpu;
-	DATA_TYPE *y_gpu;
-	DATA_TYPE *tmp_gpu;
+	DATA_TYPE *d_A;
+	DATA_TYPE *d_x;
+	DATA_TYPE *d_y;
+	DATA_TYPE *d_tmp;
 
-	cudaMalloc((void **)&A_gpu, sizeof(DATA_TYPE) * NX * NY);
-	cudaMalloc((void **)&x_gpu, sizeof(DATA_TYPE) * NY);
-	cudaMalloc((void **)&y_gpu, sizeof(DATA_TYPE) * NY);
-	cudaMalloc((void **)&tmp_gpu, sizeof(DATA_TYPE) * NX);
+	cudaMalloc((void **)&d_A, sizeof(DATA_TYPE) * NX * NY);
+	cudaMalloc((void **)&d_x, sizeof(DATA_TYPE) * NY);
+	cudaMalloc((void **)&d_y, sizeof(DATA_TYPE) * NY);
+	cudaMalloc((void **)&d_tmp, sizeof(DATA_TYPE) * NX);
 	
-	cudaMemcpy(A_gpu, A, sizeof(DATA_TYPE) * NX * NY, cudaMemcpyHostToDevice);
-	cudaMemcpy(x_gpu, x, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);
-	cudaMemcpy(y_gpu, y, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);
-	cudaMemcpy(tmp_gpu, tmp, sizeof(DATA_TYPE) * NX, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_A, A, sizeof(DATA_TYPE) * NX * NY, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_x, x, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_y, y, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_tmp, tmp, sizeof(DATA_TYPE) * NX, cudaMemcpyHostToDevice);
 	
+	//In teoria potremmo fare così: 
+	// cudaMemset (d_y, 0, sizeof(DATA_TYPE) * NY);
+	// cudaMemset (d_tmp, 0, sizeof(DATA_TYPE) * NX);
+
 	dim3 block(DIM_THREAD_BLOCK_X, DIM_THREAD_BLOCK_Y);
 	dim3 grid1((size_t)(ceil( ((float)NX) / ((float)block.x) )), 1);
 	dim3 grid2((size_t)(ceil( ((float)NY) / ((float)block.x) )), 1);
@@ -110,28 +114,28 @@ void ataxGpu(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_TYPE 
 	/* Start timer. */
   	polybench_start_instruments;
 
-	atax_kernel1<<< grid1, block >>>(nx, ny, A_gpu,x_gpu,tmp_gpu);
+	compute_tmp<<< grid1, block >>>(nx, ny, d_A,d_x,d_tmp);
 	cudaThreadSynchronize();
-	atax_kernel2<<< grid2, block >>>(nx, ny, A_gpu,y_gpu,tmp_gpu);
+	compute_y<<< grid2, block >>>(nx, ny, d_A,d_y,d_tmp);
 	cudaThreadSynchronize();
 	
 	/* Stop and print timer. */
   	polybench_stop_instruments;
     //Stampa di y:
 	
-	cudaMemcpy(y, y_gpu, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
+	cudaMemcpy(y, d_y, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
 
-	cudaFree(A_gpu);
-	cudaFree(x_gpu);
-	cudaFree(y_gpu);
-	cudaFree(tmp_gpu);
+	cudaFree(d_A);
+	cudaFree(d_x);
+	cudaFree(d_y);
+	cudaFree(d_tmp);
 }
 
 
 /* Funzione principale di calcolo, che implementa l'algoritmo ATAx. 
     VERSIONE SEQUENZIALE
  */
-static void kernel_atax_seq(int nx, int ny,
+static void sequential_atax(int nx, int ny,
                         DATA_TYPE POLYBENCH_2D(A, NX, NY, nx, ny), // Matrice A di dimensione nx x ny
                         DATA_TYPE POLYBENCH_1D(x, NY, ny),         // Vettore x di dimensione ny
                         DATA_TYPE POLYBENCH_1D(y, NY, ny),         // Vettore y di dimensione ny (output)
@@ -166,7 +170,7 @@ int main(int argc, char **argv)
 	POLYBENCH_2D_ARRAY_DECL(A,DATA_TYPE,NX,NY,nx,ny);
 	POLYBENCH_1D_ARRAY_DECL(x,DATA_TYPE,NY,ny);
 	POLYBENCH_1D_ARRAY_DECL(y,DATA_TYPE,NY,ny);
-	POLYBENCH_1D_ARRAY_DECL(y_outputFromGpu,DATA_TYPE,NY,ny);
+	// POLYBENCH_1D_ARRAY_DECL(y_outputFromGpu,DATA_TYPE,NY,ny);
 	POLYBENCH_1D_ARRAY_DECL(tmp,DATA_TYPE,NX,nx);
 
   /* Inizializza gli array con i dati appropriati. */
@@ -175,10 +179,14 @@ int main(int argc, char **argv)
   /* Avvia il timer per misurare il tempo di esecuzione del calcolo. */
   polybench_start_instruments;
 
-	ataxGpu(nx, ny, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(x), POLYBENCH_ARRAY(y), POLYBENCH_ARRAY(tmp), 
-		POLYBENCH_ARRAY(y_outputFromGpu));
+	kernel_atax(nx, ny, 
+	POLYBENCH_ARRAY(A), 
+	POLYBENCH_ARRAY(x),
+	POLYBENCH_ARRAY(y),
+	POLYBENCH_ARRAY(tmp)
+	);
 
-//   kernel_atax_seq(nx, ny,
+//   sequential_atax(nx, ny,
 //               POLYBENCH_ARRAY(A),
 //               POLYBENCH_ARRAY(x),
 //               POLYBENCH_ARRAY(y),
@@ -195,7 +203,6 @@ int main(int argc, char **argv)
 	POLYBENCH_FREE_ARRAY(A);
 	POLYBENCH_FREE_ARRAY(x);
 	POLYBENCH_FREE_ARRAY(y);
-	POLYBENCH_FREE_ARRAY(y_outputFromGpu);
 	POLYBENCH_FREE_ARRAY(tmp);
 
 
