@@ -5,6 +5,8 @@
 #include <cuda_runtime.h>
 
 #define BLOCK_SIZE 256
+#define PERCENT_DIFF_ERROR_THRESHOLD 0.5
+
 
 /* Include polybench common header. */
 #include "polybench.h"
@@ -16,6 +18,40 @@
 #include <omp.h>
 #define DIM_THREAD_BLOCK_X 32
 #define DIM_THREAD_BLOCK_Y 32
+
+#define EPSILON 1e-6 // per gestire divisori piccoli
+
+float percentDiff(float a, float b) {
+    if ((fabs(a) < EPSILON) && (fabs(b) < EPSILON)) {
+        return 0.0f; // Entrambi gli elementi sono vicini a zero
+    }
+    return fabs((a - b) / ((a + b) / 2.0f)) * 100.0f;
+}
+
+
+void compareResults(int ny, DATA_TYPE POLYBENCH_1D(z_CPU,NY,ny), DATA_TYPE POLYBENCH_1D(z_GPU,NY,ny))
+{
+	int i, fail;
+	fail = 0;
+
+	for (i=0; i<ny; i++)
+	{
+		if (percentDiff(z_CPU[i], z_GPU[i]) > PERCENT_DIFF_ERROR_THRESHOLD)
+		{
+			fail++;
+		}		
+	}
+	
+	// print results
+if (fail > 0) {
+    printf("Mannaggia alla miseria ci sono %d discrepanze tra i risultati della CPU e della GPU che superano la soglia di errore di %.2f%%.\n", fail, PERCENT_DIFF_ERROR_THRESHOLD);
+} else {
+    printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+}
+}
+
+
+
 
 /* Funzione di inizializzazione degli array. */
 static void init_array(int nx, int ny,
@@ -170,7 +206,7 @@ int main(int argc, char **argv)
 	POLYBENCH_2D_ARRAY_DECL(A,DATA_TYPE,NX,NY,nx,ny);
 	POLYBENCH_1D_ARRAY_DECL(x,DATA_TYPE,NY,ny);
 	POLYBENCH_1D_ARRAY_DECL(y,DATA_TYPE,NY,ny);
-	// POLYBENCH_1D_ARRAY_DECL(y_outputFromGpu,DATA_TYPE,NY,ny);
+	POLYBENCH_1D_ARRAY_DECL(y_CPU,DATA_TYPE,NY,ny);
 	POLYBENCH_1D_ARRAY_DECL(tmp,DATA_TYPE,NX,nx);
 
   /* Inizializza gli array con i dati appropriati. */
@@ -186,15 +222,21 @@ int main(int argc, char **argv)
 	POLYBENCH_ARRAY(tmp)
 	);
 
-//   sequential_atax(nx, ny,
-//               POLYBENCH_ARRAY(A),
-//               POLYBENCH_ARRAY(x),
-//               POLYBENCH_ARRAY(y),
-//               POLYBENCH_ARRAY(tmp));
-
-  /* Ferma il timer e stampa i risultati delle misurazioni. */
   polybench_stop_instruments;
   polybench_print_instruments;
+
+  sequential_atax(nx, ny,
+              POLYBENCH_ARRAY(A),
+              POLYBENCH_ARRAY(x),
+              POLYBENCH_ARRAY(y_CPU),
+              POLYBENCH_ARRAY(tmp));
+
+	compareResults(ny, POLYBENCH_ARRAY(y_CPU), POLYBENCH_ARRAY(y));
+
+
+
+  /* Ferma il timer e stampa i risultati delle misurazioni. */
+
 
   /* Previene l'eliminazione del codice morto (DCE) e stampa i risultati finali di y. */
   polybench_prevent_dce(print_array(nx, POLYBENCH_ARRAY(y)));
