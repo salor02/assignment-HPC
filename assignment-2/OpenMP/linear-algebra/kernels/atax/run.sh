@@ -3,5 +3,5 @@
 EXE_PATH="$(pwd)/atax_acc"
 
 rm -f ./atax_acc
-make EXT_CFLAGS="-DPOLYBENCH_TIME -D$1_DATASET -D$2" clean all run
+make EXERCISE=atax.cu DATASET_TYPE=$1_DATASET OPTIMIZATION=OPTIMIZATION_$2 
 bash ../../../utilities/time_benchmark.sh $EXE_PATH
