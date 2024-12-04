@@ -268,7 +268,7 @@ void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_T
 	dim3 grid2((size_t)(ceil( ((float)NY) / ((float)block.x) )), 1);
 
 	/* Start timer. */
-  	polybench_start_instruments;
+  	// polybench_start_instruments;
     #if defined OPTIMIZATION_1
     compute_tmp<<< grid1, block >>>(nx, ny, d_A,d_x,d_tmp);
     cudaThreadSynchronize();
@@ -299,7 +299,8 @@ void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_T
 
 	
 	/* Stop and print timer. */
-  	polybench_stop_instruments;
+  	// polybench_stop_instruments;
+    // polybench_print_instruments
 	
 	cudaMemcpy(y, d_y, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
 
@@ -367,6 +368,7 @@ int main(int argc, char **argv)
   polybench_stop_instruments;
   polybench_print_instruments;
 
+  #ifdef CHECK_RESULTS 
   sequential_atax(nx, ny,
               POLYBENCH_ARRAY(A),
               POLYBENCH_ARRAY(x),
@@ -374,7 +376,7 @@ int main(int argc, char **argv)
               POLYBENCH_ARRAY(tmp));
 
 	compareResults(ny, POLYBENCH_ARRAY(y_CPU), POLYBENCH_ARRAY(y));
-
+    #endif
 
 
   /* Ferma il timer e stampa i risultati delle misurazioni. */

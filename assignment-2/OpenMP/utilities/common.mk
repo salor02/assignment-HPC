@@ -12,6 +12,7 @@ NVCC := $(CUDA_HOME)/bin/nvcc
 DATASET_TYPE ?= MINI_DATASET        # Default dataset type
 DUMP_ARRAYS ?= 0                    # Default: do not dump arrays (0)
 OPTIMIZATION ?= SEQUENTIAL  		# Default: esecuzione sequenziale
+CHECK_RESULTS ?= 0					# Default: non controllare il risultato
 
 
 CXXFLAGS := -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -D$(DATASET_TYPE) -D$(OPTIMIZATION)
@@ -22,6 +23,9 @@ LDFLAGS := -L$(CUDA_HOME)/lib -lcudart
 ifeq ($(DUMP_ARRAYS), 1)
 CXXFLAGS += -DPOLYBENCH_DUMP_ARRAYS
 NVCCFLAGS += -DPOLYBENCH_DUMP_ARRAYS
+ifeq ($(CHECK_RESULTS), 1)
+CXXFLAGS += -DCHECK_RESULTS
+NVCCFLAGS += -DCHECK_RESULTS
 endif
 
 # Enable debugging
