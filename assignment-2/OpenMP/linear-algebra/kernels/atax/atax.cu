@@ -224,16 +224,12 @@ void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_T
 
     #endif
 
-	
-	
 	cudaMemcpy(y, d_y, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
-
 	cudaFree(d_A);
 	cudaFree(d_x);
 	cudaFree(d_y);
 	cudaFree(d_tmp);
 }
-
 
 /* Funzione principale di calcolo, che implementa l'algoritmo ATAx. 
     VERSIONE SEQUENZIALE
