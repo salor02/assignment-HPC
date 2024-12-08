@@ -16,27 +16,27 @@ atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
                                          ^
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DMINI_DATASET -DSEQUENTIAL -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.110847
+0.783592
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5403== NVPROF is profiling process 5403, command: ./atax_acc
-==5403== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==5403== 0.526926
-Profiling application: ./atax_acc
-==5403== Profiling result:
+==6953== NVPROF is profiling process 6953, command: ./atax_acc
+==6953== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==6953== Profiling application: ./atax_acc
+1.611967
+==6953== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   77.87%  23.659us         4  5.9140us  2.6570us  15.634us  [CUDA memcpy HtoD]
-                   22.13%  6.7220us         1  6.7220us  6.7220us  6.7220us  [CUDA memcpy DtoH]
-      API calls:   99.76%  370.54ms         4  92.636ms  17.500us  370.49ms  cudaMalloc
-                    0.15%  557.98us         5  111.60us  59.376us  184.43us  cudaMemcpy
-                    0.06%  226.20us         4  56.550us  14.896us  167.45us  cudaFree
-                    0.03%  101.62us        97  1.0470us     573ns  23.073us  cuDeviceGetAttribute
-                    0.00%  10.053us         1  10.053us  10.053us  10.053us  cuDeviceTotalMem
-                    0.00%  6.3010us         3  2.1000us  1.2500us  2.9680us  cuDeviceGetCount
-                    0.00%  2.6560us         2  1.3280us     885ns  1.7710us  cuDeviceGet
-                    0.00%  1.5630us         1  1.5630us  1.5630us  1.5630us  cuDeviceGetName
-                    0.00%     677ns         1     677ns     677ns     677ns  cuDeviceGetUuid
+ GPU activities:   73.43%  2.4460us         4     611ns     260ns  1.6660us  [CUDA memcpy HtoD]
+                   26.57%     885ns         1     885ns     885ns     885ns  [CUDA memcpy DtoH]
+      API calls:   98.90%  1.42691s         4  356.73ms  49.636us  1.42673s  cudaMalloc
+                    1.05%  15.150ms         5  3.0301ms  250.26us  4.0018ms  cudaMemcpy
+                    0.04%  636.78us         4  159.19us  33.802us  512.40us  cudaFree
+                    0.01%  103.18us        97  1.0630us     573ns  23.907us  cuDeviceGetAttribute
+                    0.00%  9.2190us         1  9.2190us  9.2190us  9.2190us  cuDeviceTotalMem
+                    0.00%  6.2510us         3  2.0830us  1.0420us  3.6980us  cuDeviceGetCount
+                    0.00%  2.7610us         2  1.3800us     990ns  1.7710us  cuDeviceGet
+                    0.00%  1.7190us         1  1.7190us  1.7190us  1.7190us  cuDeviceGetName
+                    0.00%     781ns         1     781ns     781ns     781ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: SEQUENTIAL
 DATASET: SMALL
@@ -56,27 +56,27 @@ atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
                                          ^
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSMALL_DATASET -DSEQUENTIAL -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.110727
+0.700365
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5481== NVPROF is profiling process 5481, command: ./atax_acc
-==5481== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-0.535691
-==5481== Profiling application: ./atax_acc
-==5481== Profiling result:
+==7040== NVPROF is profiling process 7040, command: ./atax_acc
+==7040== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+1.548193
+==7040== Profiling application: ./atax_acc
+==7040== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   99.42%  1.8965ms         4  474.12us  8.8070us  1.8700ms  [CUDA memcpy HtoD]
-                    0.58%  11.100us         1  11.100us  11.100us  11.100us  [CUDA memcpy DtoH]
-      API calls:   99.04%  373.83ms         4  93.458ms  28.594us  372.07ms  cudaMalloc
-                    0.80%  3.0363ms         5  607.26us  80.002us  1.4899ms  cudaMemcpy
-                    0.13%  474.02us         4  118.51us  19.792us  275.94us  cudaFree
-                    0.03%  100.89us        97  1.0400us     520ns  27.657us  cuDeviceGetAttribute
-                    0.00%  10.625us         1  10.625us  10.625us  10.625us  cuDeviceTotalMem
-                    0.00%  6.1450us         3  2.0480us  1.2500us  2.9160us  cuDeviceGetCount
-                    0.00%  2.7600us         2  1.3800us     937ns  1.8230us  cuDeviceGet
-                    0.00%  1.5630us         1  1.5630us  1.5630us  1.5630us  cuDeviceGetName
-                    0.00%     938ns         1     938ns     938ns     938ns  cuDeviceGetUuid
+ GPU activities:   99.46%  212.21us         4  53.052us     729ns  209.92us  [CUDA memcpy HtoD]
+                    0.54%  1.1460us         1  1.1460us  1.1460us  1.1460us  [CUDA memcpy DtoH]
+      API calls:   99.42%  1.38791s         4  346.98ms  32.136us  1.38600s  cudaMalloc
+                    0.53%  7.4198ms         5  1.4840ms  54.844us  4.0281ms  cudaMemcpy
+                    0.04%  493.55us         4  123.39us  28.646us  244.22us  cudaFree
+                    0.01%  134.32us        97  1.3840us     677ns  32.761us  cuDeviceGetAttribute
+                    0.00%  13.438us         1  13.438us  13.438us  13.438us  cuDeviceTotalMem
+                    0.00%  6.5100us         3  2.1700us  1.1460us  3.1770us  cuDeviceGetCount
+                    0.00%  3.6460us         2  1.8230us  1.5620us  2.0840us  cuDeviceGet
+                    0.00%  2.8640us         1  2.8640us  2.8640us  2.8640us  cuDeviceGetName
+                    0.00%  1.0940us         1  1.0940us  1.0940us  1.0940us  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: SEQUENTIAL
 DATASET: STANDARD
@@ -106,27 +106,27 @@ atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
                                          ^
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSTANDARD_DATASET -DSEQUENTIAL -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.374609
+1.132654
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5560== NVPROF is profiling process 5560, command: ./atax_acc
-==5560== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==5560== 0.739744
-Profiling application: ./atax_acc
-==5560== Profiling result:
+==7118== NVPROF is profiling process 7118, command: ./atax_acc
+==7118== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+2.040048
+==7118== Profiling application: ./atax_acc
+==7118== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   99.98%  84.924ms         4  21.231ms  27.194us  84.843ms  [CUDA memcpy HtoD]
-                    0.02%  19.483us         1  19.483us  19.483us  19.483us  [CUDA memcpy DtoH]
-      API calls:   82.94%  482.75ms         4  120.69ms  18.178us  481.34ms  cudaMalloc
-                   14.80%  86.162ms         5  17.232ms  120.78us  85.575ms  cudaMemcpy
-                    2.23%  12.994ms         4  3.2484ms  18.125us  12.660ms  cudaFree
-                    0.02%  140.48us        97  1.4480us     833ns  27.709us  cuDeviceGetAttribute
-                    0.00%  12.709us         1  12.709us  12.709us  12.709us  cuDeviceTotalMem
-                    0.00%  6.9270us         3  2.3090us  1.0940us  3.6460us  cuDeviceGetCount
-                    0.00%  3.1250us         2  1.5620us  1.3020us  1.8230us  cuDeviceGet
-                    0.00%  2.7610us         1  2.7610us  2.7610us  2.7610us  cuDeviceGetName
-                    0.00%  1.1460us         1  1.1460us  1.1460us  1.1460us  cuDeviceGetUuid
+ GPU activities:  100.00%  254.15ms         4  63.539ms  5.2090us  254.14ms  [CUDA memcpy HtoD]
+                    0.00%  3.3850us         1  3.3850us  3.3850us  3.3850us  [CUDA memcpy DtoH]
+      API calls:   84.54%  1.59022s         4  397.55ms  19.062us  1.58877s  cudaMalloc
+                   14.35%  270.00ms         5  54.000ms  1.8215ms  255.29ms  cudaMemcpy
+                    1.10%  20.659ms         4  5.1648ms  18.282us  20.342ms  cudaFree
+                    0.01%  105.83us        97  1.0910us     572ns  24.740us  cuDeviceGetAttribute
+                    0.00%  9.5310us         1  9.5310us  9.5310us  9.5310us  cuDeviceTotalMem
+                    0.00%  6.5110us         3  2.1700us  1.4070us  3.0210us  cuDeviceGetCount
+                    0.00%  3.7500us         2  1.8750us  1.5110us  2.2390us  cuDeviceGet
+                    0.00%  2.0310us         1  2.0310us  2.0310us  2.0310us  cuDeviceGetName
+                    0.00%     781ns         1     781ns     781ns     781ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: SEQUENTIAL
 DATASET: LARGE
@@ -146,27 +146,27 @@ atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
                                          ^
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DLARGE_DATASET -DSEQUENTIAL -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-1.119627
+2.278685
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5650== NVPROF is profiling process 5650, command: ./atax_acc
-==5650== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-1.578794
-==5650== Profiling application: ./atax_acc
-==5650== Profiling result:
+==7196== NVPROF is profiling process 7196, command: ./atax_acc
+==7196== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==7196== 3.178076
+Profiling application: ./atax_acc
+==7196== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   99.99%  531.99ms         4  133.00ms  53.237us  531.83ms  [CUDA memcpy HtoD]
-                    0.01%  34.276us         1  34.276us  34.276us  34.276us  [CUDA memcpy DtoH]
-      API calls:   58.39%  822.50ms         4  205.62ms  12.604us  820.92ms  cudaMalloc
-                   37.87%  533.54ms         5  106.71ms  185.11us  532.29ms  cudaMemcpy
-                    3.73%  52.557ms         4  13.139ms  15.209us  52.231ms  cudaFree
-                    0.01%  123.80us        97  1.2760us     729ns  25.677us  cuDeviceGetAttribute
-                    0.00%  11.198us         1  11.198us  11.198us  11.198us  cuDeviceTotalMem
-                    0.00%  6.6150us         3  2.2050us  1.4070us  3.1770us  cuDeviceGetCount
-                    0.00%  3.2820us         2  1.6410us  1.1460us  2.1360us  cuDeviceGet
-                    0.00%  2.8130us         1  2.8130us  2.8130us  2.8130us  cuDeviceGetName
-                    0.00%  1.1460us         1  1.1460us  1.1460us  1.1460us  cuDeviceGetUuid
+ GPU activities:  100.00%  1.03842s         4  259.60ms  10.314us  1.03839s  [CUDA memcpy HtoD]
+                    0.00%  6.0940us         1  6.0940us  6.0940us  6.0940us  [CUDA memcpy DtoH]
+      API calls:   63.12%  1.90674s         4  476.69ms  12.709us  1.90515s  cudaMalloc
+                   34.93%  1.05533s         5  211.07ms  2.0039ms  1.03901s  cudaMemcpy
+                    1.94%  58.660ms         4  14.665ms  14.739us  58.313ms  cudaFree
+                    0.01%  160.11us        97  1.6500us     937ns  30.626us  cuDeviceGetAttribute
+                    0.00%  14.531us         1  14.531us  14.531us  14.531us  cuDeviceTotalMem
+                    0.00%  6.1980us         3  2.0660us  1.0940us  2.7080us  cuDeviceGetCount
+                    0.00%  2.8650us         2  1.4320us  1.3540us  1.5110us  cuDeviceGet
+                    0.00%  2.4480us         1  2.4480us  2.4480us  2.4480us  cuDeviceGetName
+                    0.00%  1.5100us         1  1.5100us  1.5100us  1.5100us  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_1
 DATASET: MINI
@@ -199,31 +199,31 @@ atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DMINI_DATASET -DOPTIMIZATION_1 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.110740
+0.747066
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5731== NVPROF is profiling process 5731, command: ./atax_acc
-==5731== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==5731== 0.543059
-Profiling application: ./atax_acc
-==5731== Profiling result:
+==7275== NVPROF is profiling process 7275, command: ./atax_acc
+==7275== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+1.528883
+==7275== Profiling application: ./atax_acc
+==7275== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   42.63%  81.449us         1  81.449us  81.449us  81.449us  compute_tmp(int, int, double*, double*, double*)
-                   41.41%  79.105us         1  79.105us  79.105us  79.105us  compute_y(int, int, double*, double*, double*)
-                   12.41%  23.711us         4  5.9270us  2.6570us  15.634us  [CUDA memcpy HtoD]
-                    3.55%  6.7740us         1  6.7740us  6.7740us  6.7740us  [CUDA memcpy DtoH]
-      API calls:   99.63%  376.23ms         4  94.057ms  18.750us  376.17ms  cudaMalloc
-                    0.14%  525.95us         5  105.19us  64.585us  164.95us  cudaMemcpy
-                    0.07%  256.98us         2  128.49us  123.23us  133.75us  cudaThreadSynchronize
-                    0.07%  246.78us         4  61.694us  17.813us  180.47us  cudaFree
-                    0.06%  215.79us         2  107.89us  75.731us  140.06us  cudaLaunchKernel
-                    0.03%  120.06us        97  1.2370us     677ns  26.719us  cuDeviceGetAttribute
-                    0.00%  9.6360us         1  9.6360us  9.6360us  9.6360us  cuDeviceTotalMem
-                    0.00%  6.8230us         3  2.2740us  1.5110us  2.8640us  cuDeviceGetCount
-                    0.00%  2.9690us         2  1.4840us  1.0420us  1.9270us  cuDeviceGet
-                    0.00%  2.1350us         1  2.1350us  2.1350us  2.1350us  cuDeviceGetName
-                    0.00%  1.5100us         1  1.5100us  1.5100us  1.5100us  cuDeviceGetUuid
+ GPU activities:   42.14%  7.8130us         1  7.8130us  7.8130us  7.8130us  compute_tmp(int, int, double*, double*, double*)
+                   39.61%  7.3450us         1  7.3450us  7.3450us  7.3450us  compute_y(int, int, double*, double*, double*)
+                   12.64%  2.3430us         4     585ns     208ns  1.6140us  [CUDA memcpy HtoD]
+                    5.61%  1.0410us         1  1.0410us  1.0410us  1.0410us  [CUDA memcpy DtoH]
+      API calls:   98.76%  1.35574s         4  338.94ms  38.751us  1.35562s  cudaMalloc
+                    0.92%  12.657ms         5  2.5314ms  245.47us  4.6836ms  cudaMemcpy
+                    0.26%  3.5255ms         2  1.7628ms  1.7365ms  1.7890ms  cudaThreadSynchronize
+                    0.03%  371.72us         4  92.930us  36.927us  234.95us  cudaFree
+                    0.02%  245.78us         2  122.89us  107.40us  138.39us  cudaLaunchKernel
+                    0.01%  148.65us        97  1.5320us     573ns  65.105us  cuDeviceGetAttribute
+                    0.00%  9.9480us         1  9.9480us  9.9480us  9.9480us  cuDeviceTotalMem
+                    0.00%  7.1350us         3  2.3780us  1.5100us  3.7500us  cuDeviceGetCount
+                    0.00%  2.6570us         2  1.3280us     990ns  1.6670us  cuDeviceGet
+                    0.00%  1.7190us         1  1.7190us  1.7190us  1.7190us  cuDeviceGetName
+                    0.00%     886ns         1     886ns     886ns     886ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_1
 DATASET: SMALL
@@ -256,31 +256,31 @@ atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSMALL_DATASET -DOPTIMIZATION_1 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.129839
+0.796576
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5812== NVPROF is profiling process 5812, command: ./atax_acc
-==5812== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-0.538822
-==5812== Profiling application: ./atax_acc
-==5812== Profiling result:
+==7353== NVPROF is profiling process 7353, command: ./atax_acc
+==7353== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+1.605974
+==7353== Profiling application: ./atax_acc
+==7353== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   43.21%  3.3689ms         1  3.3689ms  3.3689ms  3.3689ms  compute_tmp(int, int, double*, double*, double*)
-                   32.32%  2.5203ms         1  2.5203ms  2.5203ms  2.5203ms  compute_y(int, int, double*, double*, double*)
-                   24.33%  1.8972ms         4  474.29us  8.8060us  1.8707ms  [CUDA memcpy HtoD]
-                    0.14%  11.047us         1  11.047us  11.047us  11.047us  [CUDA memcpy DtoH]
-      API calls:   97.36%  365.65ms         4  91.412ms  29.271us  364.21ms  cudaMalloc
-                    1.62%  6.0938ms         2  3.0469ms  2.6314ms  3.4624ms  cudaThreadSynchronize
-                    0.82%  3.0701ms         5  614.01us  70.679us  1.5116ms  cudaMemcpy
-                    0.11%  405.43us         4  101.36us  15.573us  231.10us  cudaFree
-                    0.05%  175.32us         2  87.658us  60.730us  114.59us  cudaLaunchKernel
-                    0.03%  125.89us        97  1.2970us     677ns  28.802us  cuDeviceGetAttribute
-                    0.00%  12.344us         1  12.344us  12.344us  12.344us  cuDeviceTotalMem
-                    0.00%  6.4070us         3  2.1350us  1.4590us  3.0730us  cuDeviceGetCount
-                    0.00%  3.3860us         2  1.6930us  1.4590us  1.9270us  cuDeviceGet
-                    0.00%  2.0310us         1  2.0310us  2.0310us  2.0310us  cuDeviceGetName
-                    0.00%  1.1980us         1  1.1980us  1.1980us  1.1980us  cuDeviceGetUuid
+ GPU activities:   46.29%  366.71us         1  366.71us  366.71us  366.71us  compute_tmp(int, int, double*, double*, double*)
+                   27.16%  215.18us         1  215.18us  215.18us  215.18us  compute_y(int, int, double*, double*, double*)
+                   26.40%  209.14us         4  52.284us     729ns  206.79us  [CUDA memcpy HtoD]
+                    0.15%  1.1980us         1  1.1980us  1.1980us  1.1980us  [CUDA memcpy DtoH]
+      API calls:   98.31%  1.42205s         4  355.51ms  46.511us  1.41973s  cudaMalloc
+                    1.19%  17.161ms         5  3.4322ms  1.7375ms  5.3639ms  cudaMemcpy
+                    0.41%  5.8785ms         2  2.9392ms  2.0947ms  3.7838ms  cudaThreadSynchronize
+                    0.07%  945.79us         4  236.45us  83.439us  480.94us  cudaFree
+                    0.03%  384.43us         2  192.22us  185.11us  199.33us  cudaLaunchKernel
+                    0.01%  109.17us        97  1.1250us     625ns  23.490us  cuDeviceGetAttribute
+                    0.00%  8.6990us         1  8.6990us  8.6990us  8.6990us  cuDeviceTotalMem
+                    0.00%  5.5730us         3  1.8570us  1.0420us  2.7080us  cuDeviceGetCount
+                    0.00%  2.1880us         2  1.0940us     782ns  1.4060us  cuDeviceGet
+                    0.00%  1.3550us         1  1.3550us  1.3550us  1.3550us  cuDeviceGetName
+                    0.00%     938ns         1     938ns     938ns     938ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_1
 DATASET: STANDARD
@@ -323,31 +323,31 @@ atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSTANDARD_DATASET -DOPTIMIZATION_1 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.730959
+1.002092
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5890== NVPROF is profiling process 5890, command: ./atax_acc
-==5890== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-1.333215
-==5890== Profiling application: ./atax_acc
-==5890== Profiling result:
+==7431== NVPROF is profiling process 7431, command: ./atax_acc
+==7431== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==7431== 1.173463
+Profiling application: ./atax_acc
+==7431== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   71.78%  464.54ms         1  464.54ms  464.54ms  464.54ms  compute_tmp(int, int, double*, double*, double*)
-                   20.98%  135.77ms         4  33.942ms  54.384us  135.60ms  [CUDA memcpy HtoD]
-                    7.24%  46.830ms         1  46.830ms  46.830ms  46.830ms  compute_y(int, int, double*, double*, double*)
-                    0.00%  23.754us         1  23.754us  23.754us  23.754us  [CUDA memcpy DtoH]
-      API calls:   44.19%  513.66ms         2  256.83ms  48.040ms  465.62ms  cudaThreadSynchronize
-                   41.46%  481.93ms         4  120.48ms  17.292us  480.34ms  cudaMalloc
-                   12.00%  139.52ms         5  27.903ms  218.08us  135.56ms  cudaMemcpy
-                    2.23%  25.879ms         4  6.4698ms  19.063us  25.565ms  cudaFree
-                    0.10%  1.2114ms         2  605.72us  149.48us  1.0619ms  cudaLaunchKernel
-                    0.02%  175.94us        97  1.8130us  1.0420us  33.699us  cuDeviceGetAttribute
-                    0.00%  12.396us         1  12.396us  12.396us  12.396us  cuDeviceTotalMem
-                    0.00%  6.8240us         3  2.2740us  1.1460us  3.0730us  cuDeviceGetCount
-                    0.00%  3.3340us         2  1.6670us  1.4590us  1.8750us  cuDeviceGet
+ GPU activities:   66.89%  322.94ms         1  322.94ms  322.94ms  322.94ms  compute_tmp(int, int, double*, double*, double*)
+                   29.43%  142.11ms         4  35.527ms  54.385us  141.95ms  [CUDA memcpy HtoD]
+                    3.67%  17.738ms         1  17.738ms  17.738ms  17.738ms  compute_y(int, int, double*, double*, double*)
+                    0.00%  5.3130us         1  5.3130us  5.3130us  5.3130us  [CUDA memcpy DtoH]
+      API calls:   48.93%  492.45ms         4  123.11ms  18.282us  490.99ms  cudaMalloc
+                   34.03%  342.52ms         2  171.26ms  18.601ms  323.92ms  cudaThreadSynchronize
+                   14.45%  145.47ms         5  29.095ms  216.36us  141.89ms  cudaMemcpy
+                    2.46%  24.751ms         4  6.1877ms  19.323us  24.434ms  cudaFree
+                    0.10%  1.0555ms         2  527.77us  207.35us  848.19us  cudaLaunchKernel
+                    0.01%  123.54us        97  1.2730us     677ns  26.980us  cuDeviceGetAttribute
+                    0.00%  10.625us         1  10.625us  10.625us  10.625us  cuDeviceTotalMem
+                    0.00%  6.0940us         3  2.0310us  1.2500us  2.9170us  cuDeviceGetCount
+                    0.00%  3.6450us         2  1.8220us  1.3540us  2.2910us  cuDeviceGet
                     0.00%  2.5520us         1  2.5520us  2.5520us  2.5520us  cuDeviceGetName
-                    0.00%  1.7710us         1  1.7710us  1.7710us  1.7710us  cuDeviceGetUuid
+                    0.00%  1.0930us         1  1.0930us  1.0930us  1.0930us  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_1
 DATASET: LARGE
@@ -380,31 +380,31 @@ atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DLARGE_DATASET -DOPTIMIZATION_1 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-1.959842
+1.799836
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==5974== NVPROF is profiling process 5974, command: ./atax_acc
-==5974== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==5974== 2.121098
+==7510== NVPROF is profiling process 7510, command: ./atax_acc
+==7510== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==7510== 2.249190
 Profiling application: ./atax_acc
-==5974== Profiling result:
+==7510== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   52.84%  558.26ms         1  558.26ms  558.26ms  558.26ms  compute_tmp(int, int, double*, double*, double*)
-                   42.21%  445.96ms         4  111.49ms  53.235us  445.80ms  [CUDA memcpy HtoD]
-                    4.94%  52.227ms         1  52.227ms  52.227ms  52.227ms  compute_y(int, int, double*, double*, double*)
-                    0.00%  7.2920us         1  7.2920us  7.2920us  7.2920us  [CUDA memcpy DtoH]
-      API calls:   42.20%  822.48ms         4  205.62ms  13.438us  820.93ms  cudaMalloc
-                   31.42%  612.41ms         2  306.21ms  53.108ms  559.31ms  cudaThreadSynchronize
-                   23.09%  450.03ms         5  90.006ms  188.39us  446.28ms  cudaMemcpy
-                    3.23%  63.003ms         4  15.751ms  14.948us  62.683ms  cudaFree
-                    0.05%  995.18us         2  497.59us  149.07us  846.11us  cudaLaunchKernel
-                    0.01%  148.02us        97  1.5250us     885ns  29.844us  cuDeviceGetAttribute
-                    0.00%  11.250us         1  11.250us  11.250us  11.250us  cuDeviceTotalMem
-                    0.00%  7.1350us         3  2.3780us  1.5620us  3.2290us  cuDeviceGetCount
-                    0.00%  3.4370us         2  1.7180us  1.3020us  2.1350us  cuDeviceGet
-                    0.00%  2.1880us         1  2.1880us  2.1880us  2.1880us  cuDeviceGetName
-                    0.00%  1.2500us         1  1.2500us  1.2500us  1.2500us  cuDeviceGetUuid
+ GPU activities:   47.49%  564.75ms         4  141.19ms  53.234us  564.59ms  [CUDA memcpy HtoD]
+                   47.25%  561.87ms         1  561.87ms  561.87ms  561.87ms  compute_tmp(int, int, double*, double*, double*)
+                    5.26%  62.566ms         1  62.566ms  62.566ms  62.566ms  compute_y(int, int, double*, double*, double*)
+                    0.00%  8.0220us         1  8.0220us  8.0220us  8.0220us  [CUDA memcpy DtoH]
+      API calls:   39.26%  814.76ms         4  203.69ms  13.438us  813.22ms  cudaMalloc
+                   30.18%  626.30ms         2  313.15ms  63.447ms  562.85ms  cudaThreadSynchronize
+                   27.41%  568.75ms         5  113.75ms  175.94us  565.35ms  cudaMemcpy
+                    3.10%  64.364ms         4  16.091ms  16.146us  64.032ms  cudaFree
+                    0.04%  923.97us         2  461.99us  98.700us  825.27us  cudaLaunchKernel
+                    0.01%  115.99us        97  1.1950us     625ns  26.823us  cuDeviceGetAttribute
+                    0.00%  11.562us         1  11.562us  11.562us  11.562us  cuDeviceTotalMem
+                    0.00%  10.364us         3  3.4540us  2.1350us  5.6250us  cuDeviceGetCount
+                    0.00%  4.7920us         2  2.3960us  1.7190us  3.0730us  cuDeviceGet
+                    0.00%  2.2920us         1  2.2920us  2.2920us  2.2920us  cuDeviceGetName
+                    0.00%  1.0420us         1  1.0420us  1.0420us  1.0420us  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_2
 DATASET: MINI
@@ -437,31 +437,31 @@ atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DMINI_DATASET -DOPTIMIZATION_2 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.109080
+0.118034
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==6052== NVPROF is profiling process 6052, command: ./atax_acc
-==6052== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==6052== Profiling application: ./atax_acc
-0.539617
-==6052== Profiling result:
+==7588== NVPROF is profiling process 7588, command: ./atax_acc
+==7588== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==7588== Profiling application: ./atax_acc
+0.544913
+==7588== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   45.39%  111.36us         1  111.36us  111.36us  111.36us  compute_y_shared(int, int, double*, double*, double*)
-                   42.25%  103.65us         1  103.65us  103.65us  103.65us  compute_tmp_shared(int, int, double*, double*, double*)
-                    9.62%  23.606us         4  5.9010us  2.6570us  15.633us  [CUDA memcpy HtoD]
-                    2.74%  6.7220us         1  6.7220us  6.7220us  6.7220us  [CUDA memcpy DtoH]
-      API calls:   99.64%  376.15ms         4  94.038ms  16.875us  376.09ms  cudaMalloc
-                    0.13%  494.80us         5  98.960us  59.481us  151.57us  cudaMemcpy
-                    0.08%  300.48us         2  150.24us  137.19us  163.29us  cudaThreadSynchronize
-                    0.06%  226.46us         4  56.615us  16.928us  165.11us  cudaFree
-                    0.05%  187.09us         2  93.543us  59.428us  127.66us  cudaLaunchKernel
-                    0.03%  123.28us        97  1.2700us     729ns  25.886us  cuDeviceGetAttribute
-                    0.00%  11.042us         1  11.042us  11.042us  11.042us  cuDeviceTotalMem
-                    0.00%  6.4070us         3  2.1350us  1.5110us  2.9170us  cuDeviceGetCount
-                    0.00%  3.2820us         2  1.6410us  1.0940us  2.1880us  cuDeviceGet
-                    0.00%  2.2910us         1  2.2910us  2.2910us  2.2910us  cuDeviceGetName
-                    0.00%     937ns         1     937ns     937ns     937ns  cuDeviceGetUuid
+ GPU activities:   45.04%  111.31us         1  111.31us  111.31us  111.31us  compute_y_shared(int, int, double*, double*, double*)
+                   42.68%  105.47us         1  105.47us  105.47us  105.47us  compute_tmp_shared(int, int, double*, double*, double*)
+                    9.55%  23.607us         4  5.9010us  2.6570us  15.634us  [CUDA memcpy HtoD]
+                    2.72%  6.7220us         1  6.7220us  6.7220us  6.7220us  [CUDA memcpy DtoH]
+      API calls:   99.65%  377.59ms         4  94.398ms  17.448us  377.54ms  cudaMalloc
+                    0.14%  534.02us         5  106.80us  58.334us  162.03us  cudaMemcpy
+                    0.08%  292.24us         2  146.12us  124.17us  168.08us  cudaThreadSynchronize
+                    0.06%  214.48us         4  53.620us  13.594us  163.13us  cudaFree
+                    0.04%  166.20us         2  83.100us  59.584us  106.62us  cudaLaunchKernel
+                    0.03%  112.03us        97  1.1540us     573ns  27.240us  cuDeviceGetAttribute
+                    0.00%  10.104us         1  10.104us  10.104us  10.104us  cuDeviceTotalMem
+                    0.00%  6.3540us         3  2.1180us  1.1980us  3.2290us  cuDeviceGetCount
+                    0.00%  3.4380us         2  1.7190us     886ns  2.5520us  cuDeviceGet
+                    0.00%  1.7190us         1  1.7190us  1.7190us  1.7190us  cuDeviceGetName
+                    0.00%     938ns         1     938ns     938ns     938ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_2
 DATASET: SMALL
@@ -494,31 +494,31 @@ atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSMALL_DATASET -DOPTIMIZATION_2 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.126026
+0.123475
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==6130== NVPROF is profiling process 6130, command: ./atax_acc
-==6130== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-==6130== 0.549596
+==7667== NVPROF is profiling process 7667, command: ./atax_acc
+==7667== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==7667== 0.540390
 Profiling application: ./atax_acc
-==6130== Profiling result:
+==7667== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   39.90%  3.4785ms         1  3.4785ms  3.4785ms  3.4785ms  compute_y_shared(int, int, double*, double*, double*)
-                   38.22%  3.3326ms         1  3.3326ms  3.3326ms  3.3326ms  compute_tmp_shared(int, int, double*, double*, double*)
-                   21.75%  1.8966ms         4  474.14us  8.8080us  1.8701ms  [CUDA memcpy HtoD]
-                    0.12%  10.840us         1  10.840us  10.840us  10.840us  [CUDA memcpy DtoH]
-      API calls:   97.25%  373.27ms         4  93.318ms  18.907us  371.93ms  cudaMalloc
-                    1.81%  6.9527ms         2  3.4763ms  3.3608ms  3.5919ms  cudaThreadSynchronize
-                    0.75%  2.8955ms         5  579.10us  131.88us  1.6008ms  cudaMemcpy
-                    0.10%  384.33us         4  96.083us  16.355us  214.90us  cudaFree
-                    0.05%  180.53us         2  90.262us  65.626us  114.90us  cudaLaunchKernel
-                    0.03%  124.60us        97  1.2840us     677ns  26.459us  cuDeviceGetAttribute
-                    0.00%  11.980us         1  11.980us  11.980us  11.980us  cuDeviceTotalMem
-                    0.00%  6.5100us         3  2.1700us  1.2500us  3.2810us  cuDeviceGetCount
-                    0.00%  3.2810us         2  1.6400us  1.2500us  2.0310us  cuDeviceGet
-                    0.00%  2.3960us         1  2.3960us  2.3960us  2.3960us  cuDeviceGetName
-                    0.00%  1.1460us         1  1.1460us  1.1460us  1.1460us  cuDeviceGetUuid
+ GPU activities:   39.89%  3.4762ms         1  3.4762ms  3.4762ms  3.4762ms  compute_y_shared(int, int, double*, double*, double*)
+                   38.22%  3.3313ms         1  3.3313ms  3.3313ms  3.3313ms  compute_tmp_shared(int, int, double*, double*, double*)
+                   21.76%  1.8966ms         4  474.15us  8.8060us  1.8702ms  [CUDA memcpy HtoD]
+                    0.13%  11.047us         1  11.047us  11.047us  11.047us  [CUDA memcpy DtoH]
+      API calls:   97.20%  369.02ms         4  92.254ms  18.750us  367.70ms  cudaMalloc
+                    1.83%  6.9659ms         2  3.4830ms  3.3712ms  3.5947ms  cudaThreadSynchronize
+                    0.78%  2.9593ms         5  591.85us  116.41us  1.6060ms  cudaMemcpy
+                    0.10%  393.08us         4  98.269us  16.615us  216.98us  cudaFree
+                    0.05%  199.38us         2  99.689us  61.042us  138.34us  cudaLaunchKernel
+                    0.03%  103.02us        97  1.0620us     573ns  24.480us  cuDeviceGetAttribute
+                    0.00%  10.781us         1  10.781us  10.781us  10.781us  cuDeviceTotalMem
+                    0.00%  6.8750us         3  2.2910us  1.3540us  2.9170us  cuDeviceGetCount
+                    0.00%  2.8650us         2  1.4320us  1.0420us  1.8230us  cuDeviceGet
+                    0.00%  2.1870us         1  2.1870us  2.1870us  2.1870us  cuDeviceGetName
+                    0.00%     937ns         1     937ns     937ns     937ns  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_2
 DATASET: STANDARD
@@ -561,31 +561,31 @@ atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DSTANDARD_DATASET -DOPTIMIZATION_2 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-0.501150
+0.605104
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==6208== NVPROF is profiling process 6208, command: ./atax_acc
-==6208== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-1.048614
-==6208== Profiling application: ./atax_acc
-==6208== Profiling result:
+==7745== NVPROF is profiling process 7745, command: ./atax_acc
+==7745== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+0.996762
+==7745== Profiling application: ./atax_acc
+==7745== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   55.74%  200.57ms         1  200.57ms  200.57ms  200.57ms  compute_tmp_shared(int, int, double*, double*, double*)
-                   37.43%  134.69ms         4  33.673ms  54.387us  134.53ms  [CUDA memcpy HtoD]
-                    6.83%  24.576ms         1  24.576ms  24.576ms  24.576ms  compute_y_shared(int, int, double*, double*, double*)
-                    0.00%  5.5740us         1  5.5740us  5.5740us  5.5740us  [CUDA memcpy DtoH]
-      API calls:   55.59%  487.63ms         4  121.91ms  18.177us  486.20ms  cudaMalloc
-                   25.80%  226.37ms         2  113.18ms  25.466ms  200.90ms  cudaThreadSynchronize
-                   15.70%  137.74ms         5  27.549ms  167.97us  134.46ms  cudaMemcpy
-                    2.80%  24.577ms         4  6.1442ms  19.896us  24.255ms  cudaFree
-                    0.09%  788.04us         2  394.02us  145.84us  642.20us  cudaLaunchKernel
-                    0.01%  116.05us        97  1.1960us     677ns  25.365us  cuDeviceGetAttribute
-                    0.00%  9.4800us         1  9.4800us  9.4800us  9.4800us  cuDeviceTotalMem
-                    0.00%  7.1360us         3  2.3780us  1.5630us  3.4900us  cuDeviceGetCount
-                    0.00%  4.0100us         2  2.0050us  1.3020us  2.7080us  cuDeviceGet
-                    0.00%  2.2920us         1  2.2920us  2.2920us  2.2920us  cuDeviceGetName
-                    0.00%  1.0420us         1  1.0420us  1.0420us  1.0420us  cuDeviceGetUuid
+ GPU activities:   49.62%  157.75ms         1  157.75ms  157.75ms  157.75ms  compute_tmp_shared(int, int, double*, double*, double*)
+                   42.64%  135.55ms         4  33.888ms  54.387us  135.39ms  [CUDA memcpy HtoD]
+                    7.74%  24.592ms         1  24.592ms  24.592ms  24.592ms  compute_y_shared(int, int, double*, double*, double*)
+                    0.00%  5.5220us         1  5.5220us  5.5220us  5.5220us  [CUDA memcpy DtoH]
+      API calls:   58.30%  482.91ms         4  120.73ms  17.448us  481.45ms  cudaMalloc
+                   22.17%  183.66ms         2  91.828ms  25.044ms  158.61ms  cudaThreadSynchronize
+                   16.67%  138.10ms         5  27.621ms  166.88us  135.31ms  cudaMemcpy
+                    2.78%  23.052ms         4  5.7630ms  18.751us  22.733ms  cudaFree
+                    0.06%  472.56us         2  236.28us  139.69us  332.87us  cudaLaunchKernel
+                    0.02%  128.34us        97  1.3230us     729ns  29.011us  cuDeviceGetAttribute
+                    0.00%  10.573us         1  10.573us  10.573us  10.573us  cuDeviceTotalMem
+                    0.00%  6.1450us         3  2.0480us  1.5100us  2.7600us  cuDeviceGetCount
+                    0.00%  2.9690us         2  1.4840us  1.0420us  1.9270us  cuDeviceGet
+                    0.00%  2.1870us         1  2.1870us  2.1870us  2.1870us  cuDeviceGetName
+                    0.00%  1.0410us         1  1.0410us  1.0410us  1.0410us  cuDeviceGetUuid
 ______________________________________
 OPTIMIZATION: OPTIMIZATION_2
 DATASET: LARGE
@@ -618,29 +618,29 @@ atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated
                                               ^~~~~~~~~~~~~~~~~~~~~
 /usr/local/cuda/bin/nvcc -O0 -Xcompiler -fopenmp -DPOLYBENCH_TIME -DPOLYBENCH_USE_SCALAR_LB -DLARGE_DATASET -DOPTIMIZATION_2 -lineinfo  obj/../../../utilities/polybench.o obj/atax.o -o atax_acc -L/usr/local/cuda/lib -lcudart
 ./atax_acc
-1.657167
+1.872307
 LD_LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 LIBRARY_PATH=/usr/ext/lib:/usr/local/cuda/lib: \
 sudo /usr/local/cuda/bin/nvprof ./atax_acc
-==6286== NVPROF is profiling process 6286, command: ./atax_acc
-==6286== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
-1.907903
-==6286== Profiling application: ./atax_acc
-==6286== Profiling result:
+==7824== NVPROF is profiling process 7824, command: ./atax_acc
+==7824== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+2.390372
+==7824== Profiling application: ./atax_acc
+==7824== Profiling result:
             Type  Time(%)      Time     Calls       Avg       Min       Max  Name
- GPU activities:   49.94%  427.07ms         4  106.77ms  53.286us  426.91ms  [CUDA memcpy HtoD]
-                   41.59%  355.68ms         1  355.68ms  355.68ms  355.68ms  compute_tmp_shared(int, int, double*, double*, double*)
-                    8.47%  72.396ms         1  72.396ms  72.396ms  72.396ms  compute_y_shared(int, int, double*, double*, double*)
-                    0.00%  7.3960us         1  7.3960us  7.3960us  7.3960us  [CUDA memcpy DtoH]
-      API calls:   46.59%  808.13ms         4  202.03ms  12.813us  806.48ms  cudaMalloc
-                   24.84%  430.91ms         5  86.182ms  179.33us  427.69ms  cudaMemcpy
-                   24.79%  430.06ms         2  215.03ms  73.430ms  356.63ms  cudaThreadSynchronize
-                    3.71%  64.273ms         4  16.068ms  14.844us  63.957ms  cudaFree
-                    0.06%  976.53us         2  488.27us  142.03us  834.50us  cudaLaunchKernel
-                    0.01%  122.03us        97  1.2580us     729ns  24.948us  cuDeviceGetAttribute
-                    0.00%  10.469us         1  10.469us  10.469us  10.469us  cuDeviceTotalMem
-                    0.00%  6.1980us         3  2.0660us  1.4060us  2.9690us  cuDeviceGetCount
-                    0.00%  2.9160us         2  1.4580us  1.3020us  1.6140us  cuDeviceGet
-                    0.00%  2.1870us         1  2.1870us  2.1870us  2.1870us  cuDeviceGetName
-                    0.00%  1.0420us         1  1.0420us  1.0420us  1.0420us  cuDeviceGetUuid
+ GPU activities:   53.70%  718.52ms         1  718.52ms  718.52ms  718.52ms  compute_tmp_shared(int, int, double*, double*, double*)
+                   40.90%  547.22ms         4  136.81ms  106.47us  546.90ms  [CUDA memcpy HtoD]
+                    5.40%  72.322ms         1  72.322ms  72.322ms  72.322ms  compute_y_shared(int, int, double*, double*, double*)
+                    0.00%  7.8130us         1  7.8130us  7.8130us  7.8130us  [CUDA memcpy DtoH]
+      API calls:   36.42%  807.94ms         4  201.98ms  13.021us  806.29ms  cudaMalloc
+                   35.75%  793.12ms         2  396.56ms  73.104ms  720.02ms  cudaThreadSynchronize
+                   24.86%  551.51ms         5  110.30ms  269.33us  547.53ms  cudaMemcpy
+                    2.93%  64.914ms         4  16.228ms  14.948us  64.565ms  cudaFree
+                    0.04%  952.93us         2  476.47us  95.001us  857.93us  cudaLaunchKernel
+                    0.01%  195.84us        97  2.0180us     625ns  60.886us  cuDeviceGetAttribute
+                    0.00%  13.541us         1  13.541us  13.541us  13.541us  cuDeviceTotalMem
+                    0.00%  8.6970us         3  2.8990us  2.0830us  3.8020us  cuDeviceGetCount
+                    0.00%  4.2700us         2  2.1350us  1.6660us  2.6040us  cuDeviceGet
+                    0.00%  2.9170us         1  2.9170us  2.9170us  2.9170us  cuDeviceGetName
+                    0.00%     989ns         1     989ns     989ns     989ns  cuDeviceGetUuid
 ______________________________________

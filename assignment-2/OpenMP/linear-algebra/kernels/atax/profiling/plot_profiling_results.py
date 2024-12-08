@@ -4,16 +4,17 @@ import re
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import os
+import sys
 
-# File di input e output
+# File di input e directory di output
 PROFILING_RESULTS = "profiling_results.txt"
-PLOT_DIR = "gpu_plots"
+PLOT_DIR = "aggregated_gpu_plots_per_dataset"
 
 # Crea la cartella per i grafici se non esiste
 os.makedirs(PLOT_DIR, exist_ok=True)
 
-# Struttura dati: data[ottimizzazione][operazione] = lista di tempi
-data = defaultdict(lambda: defaultdict(list))
+# Struttura dati: data[ottimizzazione][categoria][dataset] = tempo totale
+data = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
 
 # Variabili di stato
 current_optimization = None
@@ -21,18 +22,30 @@ current_dataset = None
 capture_gpu_timings = False
 
 # Pattern regex per identificare le sezioni e le operazioni GPU
-optimization_pattern = re.compile(r'^(OPTIMIZATION_\d+)$')  # Esclude SEQUENTIAL
-dataset_pattern = re.compile(r'^([A-Z]+)\s*:\s*([\d.]+)$')
+optimization_pattern = re.compile(r'^(OPTIMIZATION_\d+)$')  # Include SEQUENTIAL
+dataset_pattern = re.compile(r'^([A-Z]+)\s*:\s*([\d.]+)\s*s$')  # Es: MINI      : 1.611967 s
 gpu_timings_start_pattern = re.compile(r'^GPU Timings:$')
-gpu_timing_line_pattern = re.compile(r'^\s*([\d.]+[a-zA-Z]+)\s+([\d.]+[a-zA-Z]+)\s+(.*?):\s+([\d.]+)\s+s$')
+
+# Funzione di categorizzazione
+def categorize_operation(operation_name):
+    operation_lower = operation_name.lower()
+    # Riconosce 'compute_y', 'compute_y_shared', 'compute_tmp', 'compute_tmp_shared', 'cudalaunchkernel'
+    if "compute" in operation_lower or "launchkernel" in operation_lower:
+        return "Kernel"
+    elif "memcpy" in operation_lower:
+        return "Memory Operations"
+    elif "synchronize" in operation_lower:
+        return "Synchronization"
+    else:
+        return None  # Esclude le operazioni non desiderate
 
 # Legge il file di profiling
 with open(PROFILING_RESULTS, "r") as f:
-    for line in f:
+    for line_num, line in enumerate(f, 1):
         line = line.strip()
         if not line:
             continue
-        # Verifica se la linea indica una ottimizzazione (esclude SEQUENTIAL)
+        # Verifica se la linea indica una ottimizzazione (incluso SEQUENTIAL)
         opt_match = optimization_pattern.match(line)
         if opt_match:
             current_optimization = opt_match.group(1)
@@ -41,9 +54,6 @@ with open(PROFILING_RESULTS, "r") as f:
         dataset_match = dataset_pattern.match(line)
         if dataset_match:
             current_dataset = dataset_match.group(1)
-            runtime = float(dataset_match.group(2))
-            # Reset della flag di cattura GPU Timings
-            capture_gpu_timings = False
             continue
         # Verifica se inizia la sezione GPU Timings
         if gpu_timings_start_pattern.match(line):
@@ -55,51 +65,88 @@ with open(PROFILING_RESULTS, "r") as f:
             if line.startswith("______________________________________"):
                 capture_gpu_timings = False
                 continue
-            # Verifica se la linea corrisponde al pattern delle GPU Timings
-            gpu_match = gpu_timing_line_pattern.match(line)
-            if gpu_match:
-                time1 = gpu_match.group(1)  # Es: 80.002us
-                time2 = gpu_match.group(2)  # Es: 1.4899ms
-                operation = gpu_match.group(3).strip()  # Es: cudaMemcpy
-                time_sec = float(gpu_match.group(4))  # Es: 0.003036
+            # Split the line at the last ':'
+            if ':' not in line:
+                # Linea non conforme, skip
+                print(f"Line {line_num}: Skipping non-conforme line: {line}", file=sys.stderr)
+                continue
+            operation_part, time_part = line.rsplit(':', 1)
+            operation_part = operation_part.strip()
+            time_part = time_part.strip()
 
-                # Pulizia del nome dell'operazione
-                operation = operation.replace('[', '').replace(']', '')
-                operation = re.sub(r'\([^)]*\)', '', operation).strip()
-
-                # Aggiungi il tempo all'operazione corrente
-                data[current_optimization][operation].append(time_sec)
+            # Estrai il nome dell'operazione
+            if operation_part.startswith('[') and operation_part.endswith(']'):
+                operation = operation_part[1:-1]
             else:
-                # Linea non corrispondente al pattern, ignora o logga se necessario
+                # Take the last token as the operation name
+                tokens = operation_part.split()
+                operation = tokens[-1] if tokens else "Unknown"
+
+            # Estrai il tempo in secondi
+            # Use regex to extract the first number
+            time_match = re.match(r'^([\d.]+)', time_part)
+            if time_match:
+                time_sec_str = time_match.group(1)
+                try:
+                    time_sec = float(time_sec_str)
+                except ValueError:
+                    print(f"Line {line_num}: Unable to parse time: {time_part}", file=sys.stderr)
+                    continue
+            else:
+                print(f"Line {line_num}: Unable to parse time: {time_part}", file=sys.stderr)
+                continue
+
+            # Determina la categoria dell'operazione
+            category = categorize_operation(operation)
+            if category:
+                data[current_optimization][category][current_dataset] += time_sec
+                # Debugging: Stampa le operazioni categorizzate
+                # print(f"Line {line_num}: Categorized operation '{operation}' as '{category}' with time {time_sec} s")
+            else:
+                # Ignora l'operazione
                 pass
 
-# Calcola i tempi medi per operazione e ottimizzazione
-average_data = defaultdict(dict)
+# Definisci le categorie e i dataset
+categories = ["Kernel", "Memory Operations", "Synchronization"]
+datasets = ["MINI", "SMALL", "STANDARD", "LARGE"]
 
-for optimization, operations in data.items():
-    for operation, times in operations.items():
-        avg_time = sum(times) / len(times) if times else 0.0
-        average_data[optimization][operation] = avg_time
+# Assicurati che tutti i dataset abbiano tutte le categorie
+for optimization in data.keys():
+    for category in categories:
+        for dataset in datasets:
+            if dataset not in data[optimization][category]:
+                data[optimization][category][dataset] = 0.0  # Assegna 0 se mancano dati
 
-# Genera i grafici per ciascuna ottimizzazione
-for optimization, operations in average_data.items():
-    if not operations:
-        continue  # Salta se non ci sono operazioni
-    operations_sorted = sorted(operations.keys())
-    avg_times = [operations[op] for op in operations_sorted]
-    
-    plt.figure(figsize=(12, 8))
-    plt.bar(operations_sorted, avg_times, color='skyblue')
-    plt.xlabel('Operazione GPU', fontsize=14)
-    plt.ylabel('Tempo Medio (s)', fontsize=14)
-    plt.title(f'Tempi Medi per Operazione GPU - {optimization}', fontsize=16)
-    plt.xticks(rotation=45, ha='right', fontsize=12)
-    plt.yticks(fontsize=12)
+# Genera i grafici aggregati
+for optimization, categories_data in data.items():
+    if not categories_data:
+        continue  # Salta se non ci sono categorie
+
+    x_labels = categories
+    x = range(len(x_labels))  # Posizioni delle categorie
+    width = 0.2  # Larghezza delle barre
+
+    plt.figure(figsize=(14, 10))
+    for i, dataset in enumerate(datasets):
+        times = [categories_data[cat][dataset] for cat in x_labels]
+        plt.bar([pos + i * width for pos in x], times, width=width, label=f"{dataset}")
+
+    plt.xticks(
+        [pos + (len(datasets) / 2 - 0.5) * width for pos in x],
+        x_labels,
+        fontsize=12,
+        rotation=45
+    )
+    plt.xlabel('Categoria Operazione', fontsize=14)
+    plt.yscale('log')  # Imposta la scala logaritmica sull'asse Y
+    plt.ylabel('Tempo Totale (s) [Scala Logaritmica]', fontsize=14)
+    plt.title(f'Tempi Aggregati per Dataset e Categoria - {optimization}', fontsize=16)
+    plt.legend(title="Dataset", fontsize=12)
     plt.tight_layout()
-    
+
     # Pulizia del nome dell'ottimizzazione per il nome del file
     safe_optimization = re.sub(r'[^\w\s-]', '', optimization).replace(' ', '_')
-    plt.savefig(os.path.join(PLOT_DIR, f'{safe_optimization}_gpu_timings.png'))
+    plt.savefig(os.path.join(PLOT_DIR, f'{safe_optimization}_aggregated_gpu_timings_per_dataset.png'))
     plt.close()
 
-print(f"Grafici generati nella cartella '{PLOT_DIR}'.")
+print(f"Grafici aggregati per dataset generati nella cartella '{PLOT_DIR}'.")
