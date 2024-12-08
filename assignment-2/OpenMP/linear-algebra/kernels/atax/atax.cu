@@ -3,10 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include <cuda_runtime.h>
-
-#define PERCENT_DIFF_ERROR_THRESHOLD 0.5
-
-
 /* Include polybench common header. */
 #include "polybench.h"
 
@@ -15,11 +11,9 @@
 #include "atax.h"
 
 #include <omp.h>
-#define DIM_THREAD_BLOCK_X 32
-#define DIM_THREAD_BLOCK_Y 32
-#define BLOCK_SIZE 32
-
-
+#define BLOCK_SIZE_X 512
+#define BLOCK_SIZE_Y 1
+#define PERCENT_DIFF_ERROR_THRESHOLD 0.5
 #define EPSILON 1e-6 // per gestire divisori piccoli
 
 float percentDiff(float a, float b) {
@@ -50,9 +44,6 @@ if (fail > 0) {
     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
 }
 }
-
-
-
 
 /* Funzione di inizializzazione degli array. */
 static void init_array(int nx, int ny,
@@ -120,7 +111,7 @@ __global__ void compute_y(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DATA_TYPE 
 
 //_______________________________________________________ SOLUZIONE CON SHARED MEMORY
 __global__ void compute_tmp_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *x, DATA_TYPE *tmp) {
-    __shared__ DATA_TYPE x_shared[BLOCK_SIZE]; // Shared memory per un tile di x
+    __shared__ DATA_TYPE x_shared[BLOCK_SIZE_X]; // Shared memory per un tile di x
 
     int row = blockIdx.x * blockDim.x + threadIdx.x; // Riga processata dal thread
     int tx = threadIdx.x;                           // Indice thread nel blocco
@@ -128,9 +119,9 @@ __global__ void compute_tmp_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *x, D
     float sum = 0.0;
 
     // Itera sui tile di x
-    for (int tile = 0; tile < (ny + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
+    for (int tile = 0; tile < (ny + BLOCK_SIZE_X - 1) / BLOCK_SIZE_X; ++tile) {
         // Carica un tile di x nella memoria condivisa
-        int col = tile * BLOCK_SIZE + tx;
+        int col = tile * BLOCK_SIZE_X + tx;
         if (col < ny) {
             x_shared[tx] = x[col];
         } else {
@@ -140,8 +131,8 @@ __global__ void compute_tmp_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *x, D
 
         // Usa il tile di x_shared per calcolare tmp[row]
         if (row < nx) {
-            for (int j = 0; j < BLOCK_SIZE && tile * BLOCK_SIZE + j < ny; ++j) {
-                sum += A[row * ny + tile * BLOCK_SIZE + j] * x_shared[j];
+            for (int j = 0; j < BLOCK_SIZE_X && tile * BLOCK_SIZE_X + j < ny; ++j) {
+                sum += A[row * ny + tile * BLOCK_SIZE_X + j] * x_shared[j];
             }
         }
 
@@ -156,7 +147,7 @@ __global__ void compute_tmp_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *x, D
 
 
 __global__ void compute_y_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DATA_TYPE *tmp) {
-    __shared__ float tmp_shared[BLOCK_SIZE]; // Shared memory per un tile di tmp
+    __shared__ float tmp_shared[BLOCK_SIZE_X]; // Shared memory per un tile di tmp
 
     int col = blockIdx.x * blockDim.x + threadIdx.x; // Colonna processata dal thread
     int tx = threadIdx.x;                           // Indice thread nel blocco
@@ -164,9 +155,9 @@ __global__ void compute_y_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DAT
     float sum = 0.0;
 
     // Itera sui tile di tmp
-    for (int tile = 0; tile < (nx + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
+    for (int tile = 0; tile < (nx + BLOCK_SIZE_X - 1) / BLOCK_SIZE_X; ++tile) {
         // Carica un tile di tmp nella memoria condivisa
-        int row = tile * BLOCK_SIZE + tx;
+        int row = tile * BLOCK_SIZE_X + tx;
         if (row < nx) {
             tmp_shared[tx] = tmp[row];
         } else {
@@ -176,8 +167,8 @@ __global__ void compute_y_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DAT
 
         // Usa il tile di tmp_shared per calcolare y[col]
         if (col < ny) {
-            for (int i = 0; i < BLOCK_SIZE && tile * BLOCK_SIZE + i < nx; ++i) {
-                sum += A[(tile * BLOCK_SIZE + i) * ny + col] * tmp_shared[i];
+            for (int i = 0; i < BLOCK_SIZE_X && tile * BLOCK_SIZE_X + i < nx; ++i) {
+                sum += A[(tile * BLOCK_SIZE_X + i) * ny + col] * tmp_shared[i];
             }
         }
 
@@ -189,54 +180,6 @@ __global__ void compute_y_shared(int nx, int ny, DATA_TYPE *A, DATA_TYPE *y, DAT
         y[col] = sum;
     }
 }
-//_______________________________________________________ SOLUZIONE CON SHARED MEMORY E A TRASPOSTA
-// La funzione per calcolare tmp_shared è la stessa della versione con shared memory
-
-__global__ void transpose_matrix(int nx, int ny, DATA_TYPE *A, DATA_TYPE *A_T) {
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
-    if (row < NX && col < NY) {
-        A_T[col * NX + row] = A[row * NY + col]; // Trasporre gli elementi
-    }
-}
-
-__global__ void compute_y_transposed(int nx, int ny, DATA_TYPE *A_T, DATA_TYPE *y, DATA_TYPE *tmp) {
-    __shared__ float tmp_shared[BLOCK_SIZE]; // Shared memory per un tile di tmp
-
-    int col = blockIdx.x * blockDim.x + threadIdx.x; // Colonna processata dal thread
-    int tx = threadIdx.x;                           // Indice thread nel blocco
-
-    float sum = 0.0;
-
-    // Itera sui tile di tmp
-    for (int tile = 0; tile < (nx + BLOCK_SIZE - 1) / BLOCK_SIZE; ++tile) {
-        // Carica un tile di tmp nella memoria condivisa
-        int row = tile * BLOCK_SIZE + tx;
-        if (row < nx) {
-            tmp_shared[tx] = tmp[row];
-        } else {
-            tmp_shared[tx] = 0.0; // Padding per evitare accessi fuori dai limiti
-        }
-        __syncthreads(); // Assicura che tutti i thread abbiano caricato il tile
-
-        // Usa il tile di tmp_shared per calcolare y[col]
-        if (col < ny) {
-            for (int i = 0; i < BLOCK_SIZE && tile * BLOCK_SIZE + i < nx; ++i) {
-                sum += A_T[col * NX + (tile * BLOCK_SIZE + i)] * tmp_shared[i];
-            }
-        }
-
-        __syncthreads(); // Prima di caricare il prossimo tile
-    }
-
-    // Scrittura del risultato
-    if (col < ny) {
-        y[col] = sum;
-    }
-}
-
-
-
 /* Funzione principale di calcolo, che implementa l'algoritmo ATAx. 
     VERSIONE CUDA
  */
@@ -263,12 +206,10 @@ void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_T
 	// cudaMemset (d_y, 0, sizeof(DATA_TYPE) * NY);
 	// cudaMemset (d_tmp, 0, sizeof(DATA_TYPE) * NX);
 
-	dim3 block(DIM_THREAD_BLOCK_X, DIM_THREAD_BLOCK_Y);
+	dim3 block(BLOCK_SIZE_X, BLOCK_SIZE_Y);
 	dim3 grid1((size_t)(ceil( ((float)NX) / ((float)block.x) )), 1);
 	dim3 grid2((size_t)(ceil( ((float)NY) / ((float)block.x) )), 1);
 
-	/* Start timer. */
-  	// polybench_start_instruments;
     #if defined OPTIMIZATION_1
     compute_tmp<<< grid1, block >>>(nx, ny, d_A,d_x,d_tmp);
     cudaThreadSynchronize();
@@ -281,26 +222,9 @@ void kernel_atax(int nx, int ny, DATA_TYPE POLYBENCH_2D(A, NX, NY,nx,ny), DATA_T
     compute_y_shared<<< grid2, block >>>(nx, ny, d_A,d_y,d_tmp);
     cudaThreadSynchronize();
 
-    #elif defined OPTIMIZATION_3
-    // Allocazione memoria per la matrice trasposta
-    DATA_TYPE *d_A_T;
-
-	cudaMalloc((void **)&d_A_T, sizeof(DATA_TYPE) * NX * NY);
-    dim3 dimGrid((NY + BLOCK_SIZE - 1) / BLOCK_SIZE, (NX + BLOCK_SIZE - 1) / BLOCK_SIZE);
-    transpose_matrix<<<dimGrid, dim3(BLOCK_SIZE, BLOCK_SIZE)>>>(nx, ny,d_A, d_A_T);
-    cudaThreadSynchronize();
-    compute_tmp_shared<<< grid1, block >>>(nx, ny, d_A,d_x,d_tmp);
-    cudaThreadSynchronize();
-    compute_y_transposed<<< grid2, block >>>(nx, ny, d_A_T, d_y, d_tmp);
-    cudaThreadSynchronize();
-    cudaFree(d_A_T);
-    
     #endif
 
 	
-	/* Stop and print timer. */
-  	// polybench_stop_instruments;
-    // polybench_print_instruments
 	
 	cudaMemcpy(y, d_y, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);
 
