@@ -1,0 +1,64 @@
+SEQUENTIAL
+MINI      : 0.110847
+GPU Timings:
+SMALL     : 0.535691
+GPU Timings:
+  80.002us  1.4899ms  cudaMemcpy: 0.003036 s
+STANDARD  : 0.374609
+GPU Timings:
+  120.78us  85.575ms  cudaMemcpy: 0.086162 s
+  18.125us  12.660ms  cudaFree  : 0.012994 s
+LARGE     : 1.578794
+GPU Timings:
+  185.11us  532.29ms  cudaMemcpy: 0.533540 s
+  15.209us  52.231ms  cudaFree  : 0.052557 s
+______________________________________
+OPTIMIZATION_1
+MINI      : 0.110740
+GPU Timings:
+SMALL     : 0.538822
+GPU Timings:
+  2.5203ms  2.5203ms  compute_y(int, int, double*, double*, double*): 0.002520 s
+  8.8060us  1.8707ms  [CUDA memcpy HtoD]: 0.001897 s
+  2.6314ms  3.4624ms  cudaThreadSynchronize: 0.006094 s
+  70.679us  1.5116ms  cudaMemcpy: 0.003070 s
+STANDARD  : 1.333215
+GPU Timings:
+  54.384us  135.60ms  [CUDA memcpy HtoD]: 0.135770 s
+  46.830ms  46.830ms  compute_y(int, int, double*, double*, double*): 0.046830 s
+  17.292us  480.34ms  cudaMalloc: 0.481930 s
+  218.08us  135.56ms  cudaMemcpy: 0.139520 s
+  19.063us  25.565ms  cudaFree  : 0.025879 s
+  149.48us  1.0619ms  cudaLaunchKernel: 0.001211 s
+LARGE     : 1.959842
+GPU Timings:
+  53.235us  445.80ms  [CUDA memcpy HtoD]: 0.445960 s
+  52.227ms  52.227ms  compute_y(int, int, double*, double*, double*): 0.052227 s
+  53.108ms  559.31ms  cudaThreadSynchronize: 0.612410 s
+  188.39us  446.28ms  cudaMemcpy: 0.450030 s
+  14.948us  62.683ms  cudaFree  : 0.063003 s
+______________________________________
+OPTIMIZATION_2
+MINI      : 0.539617
+GPU Timings:
+SMALL     : 0.126026
+GPU Timings:
+  3.3326ms  3.3326ms  compute_tmp_shared(int, int, double*, double*, double*): 0.003333 s
+  8.8080us  1.8701ms  [CUDA memcpy HtoD]: 0.001897 s
+  3.3608ms  3.5919ms  cudaThreadSynchronize: 0.006953 s
+  131.88us  1.6008ms  cudaMemcpy: 0.002896 s
+STANDARD  : 1.048614
+GPU Timings:
+  54.387us  134.53ms  [CUDA memcpy HtoD]: 0.134690 s
+  24.576ms  24.576ms  compute_y_shared(int, int, double*, double*, double*): 0.024576 s
+  25.466ms  200.90ms  cudaThreadSynchronize: 0.226370 s
+  167.97us  134.46ms  cudaMemcpy: 0.137740 s
+  19.896us  24.255ms  cudaFree  : 0.024577 s
+LARGE     : 1.907903
+GPU Timings:
+  355.68ms  355.68ms  compute_tmp_shared(int, int, double*, double*, double*): 0.355680 s
+  72.396ms  72.396ms  compute_y_shared(int, int, double*, double*, double*): 0.072396 s
+  179.33us  427.69ms  cudaMemcpy: 0.430910 s
+  73.430ms  356.63ms  cudaThreadSynchronize: 0.430060 s
+  14.844us  63.957ms  cudaFree  : 0.064273 s
+______________________________________
