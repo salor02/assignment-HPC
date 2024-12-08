@@ -11,7 +11,7 @@ LOG_FILE="execution_log.txt"
 MAX_RETRIES=5
 
 # Array delle ottimizzazioni da eseguire
-optimizations=("nulla" "1" "2")
+optimizations=("nulla" "1" "2" "3")
 
 # Array dei dataset da eseguire
 datasets=("MINI" "SMALL" "STANDARD" "LARGE")
@@ -86,6 +86,10 @@ for opt in "${optimizations[@]}"; do
         optimization_label="OPTIMIZATION_$opt"
     fi
 
+    echo -e "\n=========================================="
+    echo "=== Esecuzione dell'ottimizzazione: $optimization_label ==="
+    echo "=========================================="
+
     echo "$optimization_label" >> "$OUTPUT_FILE"
 
     for dataset in "${datasets[@]}"; do
@@ -96,12 +100,11 @@ for opt in "${optimizations[@]}"; do
             exit 1
         fi
 
-        # Scrivi il risultato normalizzato nel formato richiesto nel file di output
-        printf "%-10s: %s\n" "$dataset" "$time" >> "$OUTPUT_FILE"
+        # Scrivi solo il risultato normalizzato nel file di output
+        echo "$dataset: $time" >> "$OUTPUT_FILE"
     done
 
-    # Scrivi il separatore nel file di output
-    echo "______________________________________" >> "$OUTPUT_FILE"
+    echo "__________________________________________" >> "$OUTPUT_FILE"
 done
 
 echo "Benchmark completato. Risultati salvati in $OUTPUT_FILE."

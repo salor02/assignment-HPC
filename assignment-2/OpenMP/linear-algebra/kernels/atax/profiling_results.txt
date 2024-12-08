@@ -1,0 +1,8 @@
+SEQUENTIAL
+MINI      : 0.106894   GPU: N/A       
+SMALL     : 0.110044   GPU: N/A       
+STANDARD  : 0.360102   GPU: N/A       
+LARGE     : 1.149969   GPU: N/A       
+______________________________________
+OPTIMIZATION_1
+MINI      : 0.110280   GPU: N/A       

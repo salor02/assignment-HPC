@@ -1,0 +1,164 @@
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+==29781== NVPROF is profiling process 29781, command: ./atax_acc
+==29781== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==29781== Profiling application: ./atax_acc
+==29781== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   77.91%  23.710us         4  5.9270us  2.6570us  15.633us  [CUDA memcpy HtoD]
+                   22.09%  6.7220us         1  6.7220us  6.7220us  6.7220us  [CUDA memcpy DtoH]
+      API calls:   99.76%  380.84ms         4  95.209ms  16.042us  380.78ms  cudaMalloc
+                    0.14%  538.24us         5  107.65us  55.157us  164.59us  cudaMemcpy
+                    0.06%  225.16us         4  56.290us  15.938us  166.77us  cudaFree
+                    0.03%  125.79us        97  1.2960us     729ns  28.334us  cuDeviceGetAttribute
+                    0.00%  10.521us         1  10.521us  10.521us  10.521us  cuDeviceTotalMem
+                    0.00%  5.6770us         3  1.8920us  1.2500us  2.4480us  cuDeviceGetCount
+                    0.00%  3.4890us         2  1.7440us  1.1450us  2.3440us  cuDeviceGet
+                    0.00%  1.7190us         1  1.7190us  1.7190us  1.7190us  cuDeviceGetName
+                    0.00%  1.0930us         1  1.0930us  1.0930us  1.0930us  cuDeviceGetUuid
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+==29875== NVPROF is profiling process 29875, command: ./atax_acc
+==29875== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==29875== Profiling application: ./atax_acc
+==29875== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   99.42%  1.8959ms         4  473.97us  8.8060us  1.8695ms  [CUDA memcpy HtoD]
+                    0.58%  11.099us         1  11.099us  11.099us  11.099us  [CUDA memcpy DtoH]
+      API calls:   99.04%  375.89ms         4  93.971ms  17.969us  374.54ms  cudaMalloc
+                    0.79%  3.0160ms         5  603.20us  127.92us  1.6089ms  cudaMemcpy
+                    0.12%  441.15us         4  110.29us  17.813us  257.66us  cudaFree
+                    0.04%  147.92us        97  1.5240us     885ns  30.208us  cuDeviceGetAttribute
+                    0.00%  10.781us         1  10.781us  10.781us  10.781us  cuDeviceTotalMem
+                    0.00%  6.3540us         3  2.1180us     989ns  3.4900us  cuDeviceGetCount
+                    0.00%  2.8120us         2  1.4060us  1.2500us  1.5620us  cuDeviceGet
+                    0.00%  1.8230us         1  1.8230us  1.8230us  1.8230us  cuDeviceGetName
+                    0.00%  1.3540us         1  1.3540us  1.3540us  1.3540us  cuDeviceGetUuid
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+==29969== NVPROF is profiling process 29969, command: ./atax_acc
+==29969== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==29969== Profiling application: ./atax_acc
+==29969== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   99.97%  142.77ms         4  35.693ms  54.392us  142.61ms  [CUDA memcpy HtoD]
+                    0.03%  39.024us         1  39.024us  39.024us  39.024us  [CUDA memcpy DtoH]
+      API calls:   75.24%  485.34ms         4  121.34ms  18.646us  483.93ms  cudaMalloc
+                   22.38%  144.33ms         5  28.867ms  186.36us  143.34ms  cudaMemcpy
+                    2.36%  15.196ms         4  3.7989ms  19.219us  14.850ms  cudaFree
+                    0.02%  152.45us        97  1.5710us     937ns  30.834us  cuDeviceGetAttribute
+                    0.00%  12.084us         1  12.084us  12.084us  12.084us  cuDeviceTotalMem
+                    0.00%  6.6150us         3  2.2050us  1.4060us  3.4900us  cuDeviceGetCount
+                    0.00%  3.7500us         2  1.8750us  1.8750us  1.8750us  cuDeviceGet
+                    0.00%  2.0840us         1  2.0840us  2.0840us  2.0840us  cuDeviceGetName
+                    0.00%  1.0940us         1  1.0940us  1.0940us  1.0940us  cuDeviceGetUuid
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+==30065== NVPROF is profiling process 30065, command: ./atax_acc
+==30065== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==30065== Profiling application: ./atax_acc
+==30065== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   99.99%  474.91ms         4  118.73ms  53.288us  474.75ms  [CUDA memcpy HtoD]
+                    0.01%  33.962us         1  33.962us  33.962us  33.962us  [CUDA memcpy DtoH]
+      API calls:   60.66%  818.23ms         4  204.56ms  12.969us  816.78ms  cudaMalloc
+                   35.32%  476.40ms         5  95.280ms  190.21us  475.50ms  cudaMemcpy
+                    4.01%  54.129ms         4  13.532ms  14.011us  53.793ms  cudaFree
+                    0.01%  151.10us        97  1.5570us     937ns  28.646us  cuDeviceGetAttribute
+                    0.00%  12.136us         1  12.136us  12.136us  12.136us  cuDeviceTotalMem
+                    0.00%  6.7720us         3  2.2570us  1.4590us  3.1250us  cuDeviceGetCount
+                    0.00%  3.4900us         2  1.7450us  1.2500us  2.2400us  cuDeviceGet
+                    0.00%  2.1870us         1  2.1870us  2.1870us  2.1870us  cuDeviceGetName
+                    0.00%  1.1980us         1  1.1980us  1.1980us  1.1980us  cuDeviceGetUuid
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[32], double*, double*, double*)’:
+atax.cu:215:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+==30161== NVPROF is profiling process 30161, command: ./atax_acc
+==30161== Warning: Unified Memory Profiling is not supported on the underlying platform. System requirements for unified memory can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-requirements
+==30161== Profiling application: ./atax_acc
+==30161== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   43.05%  82.639us         1  82.639us  82.639us  82.639us  compute_tmp(int, int, double*, double*, double*)
+                   40.96%  78.627us         1  78.627us  78.627us  78.627us  compute_y(int, int, double*, double*, double*)
+                   12.35%  23.708us         4  5.9270us  2.6570us  15.632us  [CUDA memcpy HtoD]
+                    3.64%  6.9820us         1  6.9820us  6.9820us  6.9820us  [CUDA memcpy DtoH]
+      API calls:   99.66%  370.01ms         4  92.502ms  17.917us  369.95ms  cudaMalloc
+                    0.13%  497.56us         5  99.511us  58.959us  164.69us  cudaMemcpy
+                    0.07%  249.59us         2  124.79us  113.91us  135.68us  cudaThreadSynchronize
+                    0.06%  209.27us         4  52.318us  14.115us  157.35us  cudaFree
+                    0.04%  165.32us         2  82.657us  60.001us  105.31us  cudaLaunchKernel
+                    0.03%  110.21us        97  1.1360us     625ns  23.385us  cuDeviceGetAttribute
+                    0.00%  9.6360us         1  9.6360us  9.6360us  9.6360us  cuDeviceTotalMem
+                    0.00%  8.8540us         3  2.9510us  1.8750us  4.4270us  cuDeviceGetCount
+                    0.00%  3.9580us         2  1.9790us     885ns  3.0730us  cuDeviceGet
+                    0.00%  2.1870us         1  2.1870us  2.1870us  2.1870us  cuDeviceGetName
+                    0.00%     886ns         1     886ns     886ns     886ns  cuDeviceGetUuid
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+nvcc error   : 'cicc' died due to signal 2 

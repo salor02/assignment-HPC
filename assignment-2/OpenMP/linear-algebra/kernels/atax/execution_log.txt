@@ -1,0 +1,262 @@
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+0.111724
+../../../utilities/time_benchmark.sh: line 57: \033[31m[WARNING]\033[0m Variance is above thresold, unsafe performance measurement: command not found
+../../../utilities/time_benchmark.sh: line 58:         => max deviation=6.89300%, tolerance=5%: command not found
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+0.118191
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+0.377696
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+1.106929
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[32], double*, double*, double*)’:
+atax.cu:215:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[500], double*, double*, double*)’:
+atax.cu:215:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[4000], double*, double*, double*)’:
+atax.cu:215:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[8000], double*, double*, double*)’:
+atax.cu:215:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:217:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+../../../utilities/time_benchmark.sh: line 57: \033[31m[WARNING]\033[0m Variance is above thresold, unsafe performance measurement: command not found
+../../../utilities/time_benchmark.sh: line 58:         => max deviation=6.45000%, tolerance=5%: command not found
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[32], double*, double*, double*)’:
+atax.cu:221:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[500], double*, double*, double*)’:
+atax.cu:221:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+In file included from atax.cu:11:0:
+atax.h:6:0: warning: "STANDARD_DATASET" redefined
+ #define STANDARD_DATASET
+ 
+<command-line>:0:0: note: this is the location of the previous definition
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[4000], double*, double*, double*)’:
+atax.cu:221:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu(44): warning: the format string ends before this argument
+
+atax.cu(272): warning: variable "y_CPU" was set but never used
+
+atax.cu(237): warning: function "sequential_atax" was declared but never referenced
+
+atax.cu: In function ‘void compareResults(int, double*, double*)’:
+atax.cu:44:41: warning: too many arguments for format [-Wformat-extra-args]
+     printf("Non ci sono errori :-)\n", PERCENT_DIFF_ERROR_THRESHOLD);
+                                         ^
+atax.cu: In function ‘void kernel_atax(int, int, double (*)[8000], double*, double*, double*)’:
+atax.cu:221:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~
+atax.cu:223:23: warning: ‘cudaError_t cudaThreadSynchronize()’ is deprecated [-Wdeprecated-declarations]
+     cudaThreadSynchronize();
+                       ^
+/usr/local/cuda/bin/../targets/aarch64-linux/include/cuda_runtime_api.h:957:46: note: declared here
+ extern __CUDA_DEPRECATED __host__ cudaError_t CUDARTAPI cudaThreadSynchronize(void);
+                                              ^~~~~~~~~~~~~~~~~~~~~

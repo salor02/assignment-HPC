@@ -1,0 +1,6 @@
+atax.cu(352): warning: variable "y_CPU" was set but never used
+
+atax.cu(317): warning: function "sequential_atax" was declared but never referenced
+
+nvcc error   : 'gcc' died due to signal 2 
+make: *** [obj/atax.o] Error 2
